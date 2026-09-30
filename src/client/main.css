@@ -1,23 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Radio+Canada:ital,wght@0,300..700;1,300..700&family=Valley+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Radio+Canada:ital,wght@0,300..700;1,300..700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Valley+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+.raleway-font {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 550;
+  font-style: normal;
+}
+
+.raleway-bold {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 650;
+  font-style: normal;
+}
+
 body {
-  background: linear-gradient(180deg, #b55a5c,#544c9a);
-  color:#501d5d;
+  background: linear-gradient(180deg, #ac2b37,#ac2b37);
+  color:#ac2b37;
   min-height: 100vh;
   margin: 0;
-  font-family: "Radio Canada", sans-serif;
+  font-family: "Raleway", sans-serif;
 }
 
 
 .box {
   background: white;
-  border: 1px solid #501d5d;
+  border: 1px solid #ac2b37;
   border-radius: 1em;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .box2 {
   background: white;
-  border: 1px solid #501d5d;
+  border: 1px solid #ac2b37;
   border-radius: 1em;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
@@ -43,7 +57,7 @@ textarea {
   width: 300px;
   box-sizing: border-box;
   /* Match form field borders */
-  border: 1px solid #501d5d;
+  border: 1px solid #ac2b37;
 }
 
 input:focus,
@@ -51,12 +65,12 @@ textarea:focus {
   /* Set the outline width and style */
   outline-style: solid;
   /* To give a little highlight on active elements */
-  outline-color: #501d5d;
+  outline-color: #ac2b37;
 }
 
 .btn-purple {
-  background-color: #501d5d;
-  border-color: #501d5d;
+  background-color: #ac2b37;
+  border-color: #ac2b37;
   color: white;
 }
 

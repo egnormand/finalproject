@@ -28,8 +28,8 @@ function SignIn() {
     <>
     <div className="container text-center mt-4">
         <div className="box p-4">
-            <h1>Welcome to Webware Project</h1>
-            <p>
+            <h1 className="raleway-bold">Welcome to Webware Project</h1>
+            <p className="raleway-font">
             Sign In or Create Account
             </p>
         </div>
@@ -42,15 +42,15 @@ function SignIn() {
             <form id="signin_form">
                 <fieldset>
                 <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Full Name *:</label>
+                    <label htmlFor="name" className="form-label raleway-font">Full Name *:</label>
                     <input type="text" id="name" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="email" className="form-label">School Email *:</label>
+                    <label htmlFor="email" className="form-label raleway-font">School Email *:</label>
                     <input type="email" id="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password *:</label>
+                    <label htmlFor="password" className="form-label raleway-font">Password *:</label>
                     <input type="text" id="password" name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} required />
                 </div>
                 <div className="d-flex justify-content-center align-items-center gap-3">
