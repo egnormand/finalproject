@@ -47,7 +47,8 @@ app.post( '/createAcct', async (req,res)=> {
   console.log( req.body )
   
   const user = await signin_collection.findOne({
-    username: req.body.username,
+    name: req.body.name,
+    email: req.body.email,
     password: req.body.password
   })
 
@@ -57,12 +58,13 @@ app.post( '/createAcct', async (req,res)=> {
   }
 
   const new_user = await signin_collection.insertOne({
-    username: req.body.username,
+    name: req.body.name,
+    email: req.body.email,
     password: req.body.password
   })
   console.log( "Account Created" )
   req.session.login = true;
-  req.session.user = req.body.username
+  req.session.user = req.body.email
   res.sendStatus(200);
 })
 
@@ -71,14 +73,15 @@ app.post( '/login', async (req,res)=> {
   console.log( req.body )
   
   const user = await signin_collection.findOne({
-    username: req.body.username,
+    name: req.body.name,
+    email: req.body.email,
     password: req.body.password
   })
 
   if(user){
     console.log( "Sign-In Sucsessful" )
     req.session.login = true;
-    req.session.user = user.username;
+    req.session.user = user.email;
     res.sendStatus(200);
   
   }else{

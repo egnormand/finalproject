@@ -4,7 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import "./main.css";
 
 function SignIn() {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   async function handleSubmit(event, action) {
@@ -12,7 +13,7 @@ function SignIn() {
     const response = await fetch(action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, password: password }) 
+        body: JSON.stringify({ name: name, email: email, password: password }) 
     })
     if (response.ok) { 
         console.log("lets go");
@@ -41,8 +42,12 @@ function SignIn() {
             <form id="signin_form">
                 <fieldset>
                 <div className="mb-3">
-                    <label htmlFor="username" className="form-label">Username *:</label>
-                    <input type="text" id="username" name="username" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required />
+                    <label htmlFor="name" className="form-label">Full Name *:</label>
+                    <input type="text" id="name" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} required />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="email" className="form-label">School Email *:</label>
+                    <input type="email" id="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">Password *:</label>
