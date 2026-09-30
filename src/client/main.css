@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Radio+Canada:ital,wght@0,300..700;1,300..700&family=Valley+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+body {
+  background: linear-gradient(180deg, #b55a5c,#544c9a);
+  color:#501d5d;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Radio Canada", sans-serif;
+}
+
+
+.box {
+  background: white;
+  border: 1px solid #501d5d;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.box2 {
+  background: white;
+  border: 1px solid #501d5d;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+
+#age_table {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+p + p {
+  margin-top: 1em;
+}
+
+input,
+textarea {
+  /* To make sure that all text fields have the same font settings
+     By default, text areas have a monospace font */
+  font: 1em sans-serif;
+  /* Uniform text field size */
+  width: 300px;
+  box-sizing: border-box;
+  /* Match form field borders */
+  border: 1px solid #501d5d;
+}
+
+input:focus,
+textarea:focus {
+  /* Set the outline width and style */
+  outline-style: solid;
+  /* To give a little highlight on active elements */
+  outline-color: #501d5d;
+}
+
+.btn-purple {
+  background-color: #501d5d;
+  border-color: #501d5d;
+  color: white;
+}
+
+#editFormDiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}

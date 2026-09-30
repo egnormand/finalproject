@@ -9,16 +9,21 @@
     "build": "vite build"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "react-dom": "^19.1.0",
+    "bootstrap": "^5.3.8",
+    "cookie-session": "^2.1.1",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "mongo": "^0.1.0",
+    "mongodb": "^7.7.0",
     "react": "^19.1.0",
-    "vite-express": "*"
+    "react-dom": "^19.1.0",
+    "vite-express": "^0.22.1"
   },
   "devDependencies": {
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
     "nodemon": "^3.1.10",
-    "vite": "^6.3.3"
+    "vite": "^6.4.3"
   }
 }
