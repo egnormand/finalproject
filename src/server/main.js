@@ -91,6 +91,68 @@ app.post( '/login', async (req,res)=> {
   }
 })
 
+const forumPostsCollection = client
+    .db("WebwareDatabase").collection("Posts");
+
+//Array for forums, we can add functionality to create forums later. When a user creates a forum theyll pick the name and we can randomly generate the id
+const forums = [
+  {id: "webware", name: "Webware"},
+  {id: "test", name: "Test"}
+];
+
+
+
+//Client fetches the forums
+app.get("/api/forums", (req, res) => {
+  res.json(forums);
+})
+
+//Get posts within a certain forum
+app.get("/api/posts", async (req, res) => {
+  const forumId = req.query.forumId;
+  if (!forums.some(forum => forum.id === forumId)) {
+    return;
+  }
+  try {
+    const posts = await forumPostsCollection.find({ foumId })
+        .sort({ createdAt: -1, _id: -1 })
+        .toArray();
+    res.json(posts);
+  } catch (err) {
+    //if for some reason posts didnt work
+  console.error(err);}
+})
+
+app.post("/api/posts", async (req, res) => {
+  const {forumId, title, body} = req.body ?? {};
+  if (!forums.some(forum => forum.id === forumId)) {
+    //error if no form selected
+    return;
+  }
+  try {
+    //using temp as the author until users are properly setup
+    const post = {
+      forumId,
+      title: title.trim(),
+      body: body.trim(),
+      author: "Temp",
+      createdAt: new Date()
+    };
+    const result = await forumPostsCollection.insertOne(post);
+    res.status(201).json({
+      _id: result.insertedId,
+      forumId: post.forumId,
+      title: post.title,
+      body: post.body,
+      author: post.author,
+      createdAt: post.createdAt,
+    });
+  } catch {
+      return;
+    }
+
+});
+
 
 ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
