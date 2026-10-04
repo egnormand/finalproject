@@ -114,7 +114,7 @@ app.get("/api/posts", async (req, res) => {
     return;
   }
   try {
-    const posts = await forumPostsCollection.find({ foumId })
+    const posts = await forumPostsCollection.find({ forumId })
         .sort({ createdAt: -1, _id: -1 })
         .toArray();
     res.json(posts);

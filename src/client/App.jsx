@@ -6,7 +6,7 @@ import Forum from './Forum.jsx'
 
 function App() {
 
-  return <forum />
+  return <Forum />
 }
 
 export default App;
