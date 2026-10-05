@@ -19,7 +19,7 @@ app.use( cookie({
 }));
 
 
-const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}/?appName=WebwareCluster`
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.PASS}@${process.env.HOST}/?appName=WebwareCluster`
 console.log( 'uri:', uri )
 const client = new MongoClient( uri )
 
@@ -34,6 +34,30 @@ app.get("/user_docs", async (req, res) => {
             res.json( docs )
         }
     })
+
+//get current user with email
+app.get("/current-user", async (req, res) => {
+  if (!req.session?.user) {
+    res.status(401).json({ error: "Not signed in" });
+    return;
+  }
+
+  const user = await signin_collection.findOne(
+    { email: req.session.user },
+    { projection: { _id: 0, name: 1, email: 1, forums: 1 } }
+  );
+
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  res.json({
+    name: user.name,
+    email: user.email,
+    forums: Array.isArray(user.forums) ? user.forums : [],
+  });
+});
 
 app.use( (req,res,next) => {
   if( signin_collection !== null ) {
@@ -60,7 +84,8 @@ app.post( '/createAcct', async (req,res)=> {
   const new_user = await signin_collection.insertOne({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password,
+    forums: []
   })
   console.log( "Account Created" )
   req.session.login = true;
@@ -79,7 +104,7 @@ app.post( '/login', async (req,res)=> {
   })
 
   if(user){
-    console.log( "Sign-In Sucsessful" )
+    console.log( "Sign-In Successful" )
     req.session.login = true;
     req.session.user = user.email;
     res.sendStatus(200);

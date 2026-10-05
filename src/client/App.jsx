@@ -1,11 +1,11 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
-import SignIn from './SignIn.jsx'
+import AccountPage from './AccountPage.jsx'
 
 function App() {
 
-  return <SignIn />
+  return <AccountPage />
 }
 
 export default App;
