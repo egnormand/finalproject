@@ -1,0 +1,36 @@
+.forum-page {
+    display: flex;
+    background: white;
+    color: black;
+}
+
+.forum-sidebar {
+    width: 150px;
+    background: #ac2b37;
+    color: white;
+}
+
+.forum-sidebar button {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.forum-content {
+    padding: 20px;
+}
+
+.forum-content h2, h3{
+    color: #ac2b37;
+}
+
+#post-box .ProseMirror {
+    padding: 10px;
+    border: 1px solid #ac2b37;
+}
+
+.forum-post {
+    padding: 20px;
+    border-bottom: 1px solid #ac2b37;
+}
+

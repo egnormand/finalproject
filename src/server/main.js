@@ -135,7 +135,7 @@ app.post("/api/posts", async (req, res) => {
       forumId,
       title: title.trim(),
       body: body.trim(),
-      author: "Temp",
+      author: "Author",
       createdAt: new Date()
     };
     const result = await forumPostsCollection.insertOne(post);

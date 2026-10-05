@@ -27,7 +27,7 @@ export default function PostEditor({onPublish}) {
             })
         });
         //makes editor display in the html below
-        let view = new EditorView(document.getElementById("post-editor"),{state} );
+        let view = new EditorView(document.getElementById("post-box"),{state} );
         editorReference.current = view;
         return () => {
             view.destroy();
@@ -55,7 +55,7 @@ export default function PostEditor({onPublish}) {
         }
     }
     return (
-        <div>
+        <div className={"post-editor"}>
             <h3>Create a post</h3>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="title" >Title</label>
@@ -64,7 +64,7 @@ export default function PostEditor({onPublish}) {
                        onChange={e => setTitle(e.target.value)}
                        required
                        />
-                <div id = "post-editor" />
+                <div id = "post-box" />
                     <button type = "submit" className = "Publish">
                         Publish
                     </button>

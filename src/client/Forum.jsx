@@ -8,6 +8,7 @@ async function request(url, options) {
     const data = await response.json();
     return data;
 }
+import "./Forum.css"
 
 export default function Forum() {
     const [forums, setForums] = useState([]);
@@ -61,7 +62,7 @@ export default function Forum() {
     }
     const selectedForum = forums.find(forum => forum.id === forumId);
     return (
-        <div className="Forum">
+        <div className="forum-page">
             <aside className="forum-sidebar">
                 <h1>Forums</h1>
                 <nav className="forum-nav">
@@ -83,7 +84,7 @@ export default function Forum() {
                 <h2>Posts</h2>
                 {/*creates one "article" per post */}
                 {posts.map(post => (
-                    <article className="post" key={post._id}>
+                    <article className="forum-post" key={post._id}>
                         <h3>{post.title}</h3>
                         <p className="post-author">{post.author}</p>
                         <div>
