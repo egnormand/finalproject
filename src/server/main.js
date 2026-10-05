@@ -46,6 +46,7 @@ await client.connect();
 const database = client.db("WebwareDatabase");
 signinCollection = database.collection("UserInfo");
 loginChallenges = database.collection("LoginChallenges");
+const forumPostsCollection = database.collection("Posts");
 await loginChallenges.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 app.use((req, res, next) => {
@@ -100,6 +101,58 @@ app.get("/auth/email/verify", async (req, res) => {
   req.session.login = true;
   req.session.user = challenge.email;
   return res.send("Email verified. You are signed in and can close this tab.");
+});
+
+const forums = [
+  { id: "webware", name: "Webware" },
+  { id: "test", name: "Test" },
+];
+
+app.get("/api/forums", (_req, res) => {
+  return res.json(forums);
+});
+
+app.get("/api/posts", async (req, res) => {
+  const forumId = req.query.forumId;
+  if (typeof forumId !== "string" || !forums.some((forum) => forum.id === forumId)) {
+    return res.status(400).json({ message: "Choose a valid forum." });
+  }
+
+  try {
+    const posts = await forumPostsCollection.find({ forumId })
+      .sort({ createdAt: -1, _id: -1 })
+      .toArray();
+    return res.json(posts);
+  } catch (error) {
+    console.error("Could not load forum posts:", error.message);
+    return res.status(500).json({ message: "Could not load forum posts." });
+  }
+});
+
+app.post("/api/posts", async (req, res) => {
+  const { forumId, title, body } = req.body ?? {};
+  if (!forums.some((forum) => forum.id === forumId)) {
+    return res.status(400).json({ message: "Choose a valid forum." });
+  }
+  if (typeof title !== "string" || !title.trim() || typeof body !== "string" || !body.trim()) {
+    return res.status(400).json({ message: "Enter a title and post body." });
+  }
+
+  const post = {
+    forumId,
+    title: title.trim(),
+    body: body.trim(),
+    author: req.session?.user || "Author",
+    createdAt: new Date(),
+  };
+
+  try {
+    const result = await forumPostsCollection.insertOne(post);
+    return res.status(201).json({ _id: result.insertedId, ...post });
+  } catch (error) {
+    console.error("Could not create forum post:", error.message);
+    return res.status(500).json({ message: "Could not create forum post." });
+  }
 });
 
 app.post("/createAcct", async (req, res) => {
@@ -164,9 +217,5 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/logout", (req, res) => {
-  req.session = null;
-  return res.sendStatus(204);
-});
 
 ViteExpress.listen(app, 3000, () => console.log("Server is listening on port 3000..."));
