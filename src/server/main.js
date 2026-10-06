@@ -44,7 +44,7 @@ app.get("/current-user", async (req, res) => {
 
   const user = await signin_collection.findOne(
     { email: req.session.user },
-    { projection: { _id: 0, name: 1, email: 1, forums: 1 } }
+    { projection: { _id: 0, name: 1, email: 1, passwordHash: 1, forums: 1 } }
   );
 
   if (!user) {
@@ -55,6 +55,7 @@ app.get("/current-user", async (req, res) => {
   res.json({
     name: user.name,
     email: user.email,
+    passwordHash: user.passwordHash,
     forums: Array.isArray(user.forums) ? user.forums : [],
   });
 });
@@ -73,7 +74,7 @@ app.post( '/createAcct', async (req,res)=> {
   const user = await signin_collection.findOne({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password
+    passwordHash: req.body.passwordHash
   })
 
   if(user){
@@ -84,7 +85,7 @@ app.post( '/createAcct', async (req,res)=> {
   const new_user = await signin_collection.insertOne({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    passwordHash: req.body.passwordHash,
     forums: []
   })
   console.log( "Account Created" )
@@ -100,7 +101,7 @@ app.post( '/login', async (req,res)=> {
   const user = await signin_collection.findOne({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password
+    passwordHash: req.body.passwordHash
   })
 
   if(user){

@@ -132,3 +132,39 @@ body{
     padding: 10px;
     border: 1px solid #ac2b37;
 }
+
+
+.editFormDiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+.editFormDiv legend {
+  color: #ac2b37;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.box2 {
+  background: white;
+  color: black;
+  border: 1px solid #ac2b37;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.box2 fieldset {
+  border: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}

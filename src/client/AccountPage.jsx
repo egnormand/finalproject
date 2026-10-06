@@ -15,10 +15,17 @@ export default function AccountDisplay() {
         { id: 4, name: "Off-Topic Chat" },
     ]);
     const [forumId, setForumId] = useState(null);
-    const [username, setUsername] = useState("Loading...");
+    const [name, setName] = useState("Loading...");
     const [email, setEmail] = useState("Loading...");
+    const [password, setPassword] = useState("Loading...");
     const [followingForums, setFollowingForums] = useState(fakeFollowingForums);
     const [userError, setUserError] = useState("");
+    const [editUser, setEditUser] = useState('');
+    const [editEmail, setEditEmail] = useState('');
+    const [editPass, setEditPass] = useState('');
+    const [editUserPopup, setEditUserPopup] = useState(null);
+    const [editEmailPopup, setEditEmailPopup] = useState(null);
+    const [editPassPopup, setEditPassPopup] = useState(null);
 
     useEffect(() => {
         async function loadCurrentUser() {
@@ -29,13 +36,15 @@ export default function AccountDisplay() {
                 }
 
                 const user = await response.json();
-                setUsername(user.name);
+                setName(user.name);
                 setEmail(user.email);
+                setPassword(user.passwordHash);
                 setFollowingForums(user.forums.length > 0 ? user.forums : fakeFollowingForums);
             } catch (error) {
                 setUserError(error.message);
-                setUsername("Unavailable");
+                setName("Unavailable");
                 setEmail("Unavailable");
+                setPassword("Unavailable");
                 setFollowingForums(fakeFollowingForums);
             }
         }
@@ -43,7 +52,27 @@ export default function AccountDisplay() {
         loadCurrentUser();
     }, []);
 
+    const editUserForm = function(){
+        setEditUserPopup(true);
+        setEditUser(name);
+    }
+    const editEmailForm = function(){
+        setEditEmailPopup(true);
+        setEditEmail(email);
+    }
+    const editPassForm = function(){
+        setEditPassPopup(true);
+        setEditPass(password);
+    }
+
+    const closeForm = () => {
+        setEditUserPopup(null);
+        setEditEmailPopup(null);
+        setEditPassPopup(null);
+    }
+
     return (
+        <>
         <div className="account-page">
             <div className="account-sidebar">
                 <h1>Forums</h1>
@@ -53,7 +82,7 @@ export default function AccountDisplay() {
                         {forum.name}
                     </button>
                 ))}
-                <div class="special-button">
+                <div className="special-button">
                     <button>Account Info</button>
                 </div>
             </div>
@@ -62,19 +91,19 @@ export default function AccountDisplay() {
                 <h1>Account Info</h1>
                 <h2>User Info</h2>
                     <div className="row">
-                        <p>Username:</p>
-                        <p>{username}</p>
-                        <button className="forum-action-button">Edit?</button>
+                        <p>Name:</p>
+                        <p>{name}</p>
+                        <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Edit?</button>
                     </div>
                 <div className="row">
                     <p>Email:</p>
                     <p>{email}</p>
-                    <button className="forum-action-button">Edit?</button>
+                    <button className="forum-action-button" onClick={() => editEmailForm()}>Edit?</button>
                 </div>
                 <div className="row">
                     <p>Password:</p>
                     <p aria-label="Password hidden">********</p>
-                    <button className="forum-action-button">Edit?</button>
+                    <button className="forum-action-button" onClick={() => editPassForm()}>Edit?</button>
                 </div>
                 {userError && <p role="alert">{userError}</p>}
 
@@ -82,8 +111,8 @@ export default function AccountDisplay() {
                 <h3>Total: {followingForums.length}</h3>
                 <ul>
                     {followingForums.map((forum, index) => (
-                        <div className="row2">
-                        <li key={forum.id ?? forum._id ?? index}>
+                        <div key={forum.id ?? forum._id ?? index} className="row2">
+                        <li>
                             {typeof forum === "string" ? forum : forum.name ?? forum.forumName}
                         </li>
                         <button className="forum-action-button">View</button>
@@ -93,5 +122,79 @@ export default function AccountDisplay() {
                 </ul>
             </div>
         </div>
+        
+
+        {editUserPopup && (
+            <div className="box2 editFormDiv">
+                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <fieldset>
+                    <legend>Insert New Name</legend>
+                    <div className="mb-3">
+                    <label htmlFor="Name" className="form-label">New Name *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editUser} onChange={(event) => setEditUser(event.target.value)} required/>
+                    </div>
+                    <div className="button-container">
+                        <p className="button">
+                            <button type="submit" className="forum-action-button" id="save_update">Update</button>
+                        </p>
+                        <p className="button-container">
+                            <button type="button" className="forum-action-button" onClick={closeForm}>Close</button>
+                        </p>
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+            )}
+
+
+            {editEmailPopup && (
+            <div className="box2 editFormDiv">
+                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <fieldset>
+                    <legend>Insert New Email</legend>
+                    <div className="mb-3">
+                    <label htmlFor="Name" className="form-label">New Email *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editEmail} onChange={(event) => setEditEmail(event.target.value)} required/>
+                    </div>
+                    <div className="button-container">
+                        <p className="button">
+                            <button type="submit" className="forum-action-button" id="save_update">Update</button>
+                        </p>
+                        <p className="button-container">
+                            <button type="button" className="forum-action-button" onClick={closeForm}>Close</button>
+                        </p>
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+            )}
+
+
+            {editPassPopup && (
+            <div className="box2 editFormDiv">
+                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <fieldset>
+                    <legend>Insert New Password</legend>
+                    <div className="mb-3">
+                    <label htmlFor="Name" className="form-label">New Password *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editPass} onChange={(event) => setEditPass(event.target.value)} required/>
+                    </div>
+                    <div className="mb-3">
+                    <label htmlFor="Name" className="form-label">Confirm New Password *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editPass} onChange={(event) => setEditPass(event.target.value)} required/>
+                    </div>
+                    <div className="button-container">
+                        <p className="button">
+                            <button type="submit" className="forum-action-button" id="save_update">Update</button>
+                        </p>
+                        <p className="button-container">
+                            <button type="button" className="forum-action-button" onClick={closeForm}>Close</button>
+                        </p>
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+            )}
+        </>
     )
 }
