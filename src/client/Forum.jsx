@@ -2,12 +2,6 @@ import {useEffect, useState} from 'react';
 
 import Markdown from 'react-markdown';
 import PostEditor from './PostEditor';
-
-async function request(url, options) {
-    const response = await fetch(url, options);
-    const data = await response.json();
-    return data;
-}
 import "./Forum.css"
 
 export default function Forum() {
@@ -19,17 +13,10 @@ export default function Forum() {
     const [forumName, setForumName] = useState("");
 
     useEffect(() => {
-        let active = true;
-
-        request("/api/forums").then(data => {
-            if(!active) return;
-            setForums(data);
-            //selects default forum
-            setForumId(data[0]?.id || "");
-        });
-        return () => {
-            active = false;
-        };
+        fetch("/api/forums")
+            .then(response => response.json())
+            .then(data=>{setForums(data);setForumId(data[0]?.id || "");
+            });
     }, []);
     //load posts
     useEffect(() => {
@@ -52,14 +39,25 @@ export default function Forum() {
 
     //when a user submits this makes the post
     async function createPost(title, body){
-        const response = await fetch("/api/posts", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({forumId, title, body})
-        });
-        setRefresh(current => current + 1);
-        //lets the form be cleared
-        return true;
+
+       try {
+           const response = await fetch("/api/posts", {
+               method: "POST",
+               headers: {"Content-Type": "application/json"},
+               body: JSON.stringify({forumId, title, body})
+           });
+           if (!response.ok) {
+               const data = await response.json();
+               alert(data.message || "Could not create post.");
+               return false;
+           }
+           setRefresh(current => current + 1);
+           //lets the form be cleared
+           return true;
+       } catch (error) {
+           console.log(error);
+           return false;
+       }
     }
 
     //Create forum function
@@ -72,11 +70,16 @@ export default function Forum() {
                 body: JSON.stringify({name: forumName})
             });
             const forum = await response.json();
+            if(!response.ok) {
+                alert(forum.message || "Could not create forum.");
+                return;
+            }
             setForums(current => [...current, forum]);
             setForumId(forum.id);
             setForumName("");
         } catch (error) {
             console.log(error);
+            alert("Could not create forum.");
         }
     }
     const selectedForum = forums.find(forum => forum.id === forumId);

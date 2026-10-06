@@ -120,13 +120,16 @@ app.get("/api/forums", async (req, res) => {
     const forums = await forumsCollection.find({}).sort({name: 1}).toArray();
     res.json(forums);
   } catch (error) {
-    console.log(error);
+    console.error("could not create forum:", error);
+    return res.status(400).json({message: "Could not create forum"});
   }
 })
 
 //create a new forum
 app.post("/api/forums", async (req, res) => {
   const {name} = req.body;
+  if (typeof name !== "string" || !name.trim())
+  {return res.status(400).json({message: "Enter a forum name."});}
   const forum = {
     id: randomBytes(8).toString("hex"),
     name: name.trim()
@@ -135,7 +138,8 @@ app.post("/api/forums", async (req, res) => {
     await forumsCollection.insertOne(forum);
     res.json(forum);
   } catch (error) {
-    console.log(error);
+    console.error("Could not load forums:", error);
+    return res.status(500).json({ message: "Could not load forum." });
   }
 })
 
@@ -152,9 +156,7 @@ app.get("/api/posts", async (req, res) => {
 
 app.post("/api/posts", async (req, res) => {
   const { forumId, title, body } = req.body ?? {};
-  if (typeof forumId !== "string" || !(await forumsCollection.findOne({ id: forumId }))) {
-    return res.status(400).json({ message: "Choose a valid forum." });
-  }
+
   if (typeof title !== "string" || !title.trim() || typeof body !== "string" || !body.trim()) {
     return res.status(400).json({ message: "Enter a title and post body." });
   }
@@ -168,6 +170,9 @@ app.post("/api/posts", async (req, res) => {
   };
 
   try {
+    if (typeof forumId !== "string" || !(await forumsCollection.findOne({ id: forumId }))) {
+      return res.status(400).json({ message: "Choose a valid forum." });
+    }
     const result = await forumPostsCollection.insertOne(post);
     return res.status(201).json({ _id: result.insertedId, ...post });
   } catch (error) {
