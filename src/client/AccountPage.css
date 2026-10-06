@@ -1,0 +1,170 @@
+body{
+    background-color: white;
+}
+
+.account-sidebar {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  box-sizing: border-box;
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #ac2b37;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 10px;
+}
+
+.account-sidebar h1 {
+    color: white;
+    font-size: 40px;
+    overflow-wrap: anywhere;
+    margin-top: 10px;
+}
+
+.account-sidebar button {
+    box-sizing: border-box;
+    width: calc(100% - 20px);
+    margin: 10px 10px 5px;
+    padding: 8px;
+    text-align: center;
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.account-sidebar button:hover {
+    background-color: #e0e0e0;
+}
+
+.account-sidebar button.selected {
+    background-color: #e0e0e0;
+}
+
+.account-sidevar special-button{
+    position: sticky;
+    
+}
+
+/* Style page content */
+.main {
+  margin-top: -10px;
+  margin-left: 150px; /* Keep content beside the sidebar */
+  padding: 0 10px;
+  min-height: 100vh;
+  color: black;
+  background-color: white;
+  text-align: left;
+}
+
+.main h1 {
+   color: #ac2b37;
+   margin: 0px 10px 10px 20px;
+}
+
+.main h2 {
+  color: #ac2b37;
+  top: 0;
+  margin: 0;
+  padding: 10px 0;
+  background-color: white;
+  z-index: 2;
+}
+
+.main h3 {
+   color: #b16d74;
+   margin-top: -15px;
+}
+
+.main ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 240px) auto;
+  align-items: center;
+  column-gap: 12px;
+}
+
+.row p {
+  margin: 0;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.row2 li {
+  margin: 0;
+}
+
+.row2:hover {
+    background-color: #e0e0e0;
+}
+
+.forum-action-button {
+  min-width: 52px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.account-sidebar {
+    width: 150px;
+    background: #ac2b37;
+    color: white;
+}
+
+.account-content h2, h3{
+    color: #ac2b37;
+}
+
+#post-box .ProseMirror {
+    padding: 10px;
+    border: 1px solid #ac2b37;
+}
+
+
+.editFormDiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+.editFormDiv legend {
+  color: #ac2b37;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.box2 {
+  background: white;
+  color: black;
+  border: 1px solid #ac2b37;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.box2 fieldset {
+  border: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
