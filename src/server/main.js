@@ -68,6 +68,24 @@ app.use( (req,res,next) => {
   }
 })
 
+app.post('/update', async (req, res) => {
+    try {
+        const { _id, field, value } = req.body;
+
+        const result = await signin_collection.updateOne(
+            { _id: new ObjectId(_id) },
+            { $set: { [field]: value } }
+        );
+
+        console.log("Update result:", result);
+
+        res.json(result);
+    } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.post( '/createAcct', async (req,res)=> {
   console.log( req.body )
   

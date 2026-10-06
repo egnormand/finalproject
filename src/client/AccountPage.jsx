@@ -18,6 +18,7 @@ export default function AccountDisplay() {
     const [name, setName] = useState("Loading...");
     const [email, setEmail] = useState("Loading...");
     const [password, setPassword] = useState("Loading...");
+    const [userId, setUserId] = useState(null);
     const [followingForums, setFollowingForums] = useState(fakeFollowingForums);
     const [userError, setUserError] = useState("");
     const [editUser, setEditUser] = useState('');
@@ -36,6 +37,7 @@ export default function AccountDisplay() {
                 }
 
                 const user = await response.json();
+               setUserId(user._id); 
                 setName(user.name);
                 setEmail(user.email);
                 setPassword(user.passwordHash);
@@ -51,6 +53,43 @@ export default function AccountDisplay() {
 
         loadCurrentUser();
     }, []);
+
+
+    const handleUpdate = async (event, field) => {
+      event.preventDefault();
+      let value;
+      if (field === "name"){
+        value = editUser;
+      } else if (field === "email"){
+        value = editEmail;
+      } else if (field === "password"){
+        value = editPass;
+      }
+      const response = await fetch("/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+            body: JSON.stringify({
+                _id: userId,
+                field: field,
+                value: value
+            })
+        });
+        if (response.ok) {
+            if (field === "name"){
+                setName(editUser);
+                setEditUserPopup(null);
+            } else if (field === "email") {
+                setEmail(editEmail);
+                setEditEmailPopup(null);
+            } else if (field === "password") {
+                setEditPassPopup(null);
+            }
+        } else {
+            console.log("Update Failed.");
+        }
+    };
 
     const editUserForm = function(){
         setEditUserPopup(true);
@@ -70,6 +109,8 @@ export default function AccountDisplay() {
         setEditEmailPopup(null);
         setEditPassPopup(null);
     }
+
+
 
     return (
         <>
@@ -126,7 +167,7 @@ export default function AccountDisplay() {
 
         {editUserPopup && (
             <div className="box2 editFormDiv">
-                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "name")}>
                 <fieldset>
                     <legend>Insert New Name</legend>
                     <div className="mb-3">
@@ -149,7 +190,7 @@ export default function AccountDisplay() {
 
             {editEmailPopup && (
             <div className="box2 editFormDiv">
-                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "email")}>
                 <fieldset>
                     <legend>Insert New Email</legend>
                     <div className="mb-3">
@@ -172,7 +213,7 @@ export default function AccountDisplay() {
 
             {editPassPopup && (
             <div className="box2 editFormDiv">
-                <form id="editForm" className="form-container" /*onSubmit={handleUpdate}*/>
+                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "password")}>
                 <fieldset>
                     <legend>Insert New Password</legend>
                     <div className="mb-3">
