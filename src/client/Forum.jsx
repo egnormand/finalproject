@@ -16,6 +16,7 @@ export default function Forum() {
     const [posts, setPosts] = useState([]);
     //used to tell the page to load new posts
     const [refresh, setRefresh] = useState(0);
+    const [forumName, setForumName] = useState("");
 
     useEffect(() => {
         let active = true;
@@ -60,6 +61,24 @@ export default function Forum() {
         //lets the form be cleared
         return true;
     }
+
+    //Create forum function
+    async function createForum(event){
+        event.preventDefault();
+        try {
+            const response = await fetch(`/api/forums/`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({name: forumName})
+            });
+            const forum = await response.json();
+            setForums(current => [...current, forum]);
+            setForumId(forum.id);
+            setForumName("");
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const selectedForum = forums.find(forum => forum.id === forumId);
     return (
         <div className="forum-page">
@@ -75,6 +94,16 @@ export default function Forum() {
                         </button>
                     ))}
                 </nav>
+                <form className = "new-forum" onSubmit={createForum}>
+                    <label htmlFor = "forum-name">New Forum</label>
+                    <input
+                        id="forum-name"
+                        value={forumName}
+                        onChange={event => setForumName(event.target.value)}
+                        required
+                        />
+                    <button type="submit">Add Forum</button>
+                </form>
             </aside>
             <main className="forum-content">
                 <h2>{selectedForum?.name}</h2>

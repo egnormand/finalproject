@@ -33,3 +33,10 @@
     padding: 20px;
     border-bottom: 1px solid #ac2b37;
 }
+
+.new-forum{
+    margin-top: 20px;
+}
+.new-forum input {
+    width: 100%;
+}

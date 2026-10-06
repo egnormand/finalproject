@@ -48,6 +48,7 @@ signinCollection = database.collection("UserInfo");
 loginChallenges = database.collection("LoginChallenges");
 const forumPostsCollection = database.collection("Posts");
 await loginChallenges.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+const forumsCollection = database.collection("Forums");
 
 app.use((req, res, next) => {
   if (signinCollection && loginChallenges) return next();
@@ -103,25 +104,45 @@ app.get("/auth/email/verify", async (req, res) => {
   return res.send("Email verified. You are signed in and can close this tab.");
 });
 
+await forumsCollection.createIndex({ id: 1 }, { unique: true });
+
+/*
 const forums = [
   { id: "webware", name: "Webware" },
   { id: "test", name: "Test" },
 ];
+*/
 
-app.get("/api/forums", (_req, res) => {
-  return res.json(forums);
-});
+
+
+app.get("/api/forums", async (req, res) => {
+  try {
+    const forums = await forumsCollection.find({}).sort({name: 1}).toArray();
+    res.json(forums);
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+//create a new forum
+app.post("/api/forums", async (req, res) => {
+  const {name} = req.body;
+  const forum = {
+    id: randomBytes(8).toString("hex"),
+    name: name.trim()
+  };
+  try {
+    await forumsCollection.insertOne(forum);
+    res.json(forum);
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 app.get("/api/posts", async (req, res) => {
   const forumId = req.query.forumId;
-  if (typeof forumId !== "string" || !forums.some((forum) => forum.id === forumId)) {
-    return res.status(400).json({ message: "Choose a valid forum." });
-  }
-
   try {
-    const posts = await forumPostsCollection.find({ forumId })
-      .sort({ createdAt: -1, _id: -1 })
-      .toArray();
+    const posts = await forumPostsCollection.find({forumId}).sort({createdAt: -1, _id: -1}).toArray();
     return res.json(posts);
   } catch (error) {
     console.error("Could not load forum posts:", error.message);
@@ -131,7 +152,7 @@ app.get("/api/posts", async (req, res) => {
 
 app.post("/api/posts", async (req, res) => {
   const { forumId, title, body } = req.body ?? {};
-  if (!forums.some((forum) => forum.id === forumId)) {
+  if (typeof forumId !== "string" || !(await forumsCollection.findOne({ id: forumId }))) {
     return res.status(400).json({ message: "Choose a valid forum." });
   }
   if (typeof title !== "string" || !title.trim() || typeof body !== "string" || !body.trim()) {
