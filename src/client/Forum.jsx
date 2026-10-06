@@ -1,8 +1,9 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from "react";
 
-import Markdown from 'react-markdown';
-import PostEditor from './PostEditor';
-import "./Forum.css"
+import Markdown from "react-markdown";
+import PostEditor from "./PostEditor";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./Forum.css";
 
 export default function Forum() {
     const [forums, setForums] = useState([]);
@@ -11,11 +12,14 @@ export default function Forum() {
     //used to tell the page to load new posts
     const [refresh, setRefresh] = useState(0);
     const [forumName, setForumName] = useState("");
+    const [showEditor, setShowEditor] = useState(false);
 
     useEffect(() => {
         fetch("/api/forums")
             .then(response => response.json())
-            .then(data=>{setForums(data);setForumId(data[0]?.id || "");
+            .then(data => {
+                setForums(data);
+                setForumId(data[0]?.id || "");
             });
     }, []);
     //load posts
@@ -25,7 +29,8 @@ export default function Forum() {
         let active = true;
         //get rid of previous posts when the page loads
         setPosts([]);
-        fetch(`/api/posts?forumId=${(forumId)}`).then(response => response.json())
+        fetch(`/api/posts?forumId=${forumId}`)
+            .then(response => response.json())
             .then(data => {
                 if (active && Array.isArray(data)) {
                     setPosts(data);
@@ -38,39 +43,39 @@ export default function Forum() {
     }, [forumId, refresh]);
 
     //when a user submits this makes the post
-    async function createPost(title, body){
-
-       try {
-           const response = await fetch("/api/posts", {
-               method: "POST",
-               headers: {"Content-Type": "application/json"},
-               body: JSON.stringify({forumId, title, body})
-           });
-           if (!response.ok) {
-               const data = await response.json();
-               alert(data.message || "Could not create post.");
-               return false;
-           }
-           setRefresh(current => current + 1);
-           //lets the form be cleared
-           return true;
-       } catch (error) {
-           console.log(error);
-           return false;
-       }
+    async function createPost(title, body) {
+        try {
+            const response = await fetch("/api/posts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ forumId, title, body }),
+            });
+            if (!response.ok) {
+                const data = await response.json();
+                alert(data.message || "Could not create post.");
+                return false;
+            }
+            setRefresh(current => current + 1);
+            setShowEditor(false);
+            //lets the form be cleared
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 
     //Create forum function
-    async function createForum(event){
+    async function createForum(event) {
         event.preventDefault();
         try {
             const response = await fetch(`/api/forums/`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({name: forumName})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: forumName }),
             });
             const forum = await response.json();
-            if(!response.ok) {
+            if (!response.ok) {
                 alert(forum.message || "Could not create forum.");
                 return;
             }
@@ -84,49 +89,100 @@ export default function Forum() {
     }
     const selectedForum = forums.find(forum => forum.id === forumId);
     return (
-        <div className="forum-page">
-            <aside className="forum-sidebar">
-                <h1>Forums</h1>
-                <nav className="forum-nav">
-                    {/*creates the button for each forum*/}
-                    {forums.map(forum => (
-                        <button key={forum.id} className = {forum.id === forumId
-                        ? "forum-button selected" : "forum-button"}
-                        onClick={() => setForumId(forum.id)}>
-                            {forum.name}
-                        </button>
-                    ))}
-                </nav>
-                <form className = "new-forum" onSubmit={createForum}>
-                    <label htmlFor = "forum-name">New Forum</label>
-                    <input
-                        id="forum-name"
-                        value={forumName}
-                        onChange={event => setForumName(event.target.value)}
-                        required
+        <>
+            <header className="site-header">
+                <button
+                    className="btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#forumSidebar"
+                    aria-expanded="true"
+                    aria-controls="forumSidebar"
+                    aria-label="Toggle forum sidebar"
+                >
+                    ☰
+                </button>
+                <span className="site-name">WPI Forums</span>
+            </header>
+            <div className="forum-page">
+                <div id="forumSidebar" className="collapse collapse-horizontal show">
+                    <aside className="forum-sidebar">
+                        <h1>Forums</h1>
+                        <nav className="forum-nav">
+                            {/*creates the button for each forum*/}
+                            {forums.map(forum => (
+                                <button
+                                    key={forum.id}
+                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
+                                    onClick={() => setForumId(forum.id)}
+                                >
+                                    {forum.name}
+                                </button>
+                            ))}
+                        </nav>
+                        <form className="new-forum card" onSubmit={createForum}>
+                            <div className="card-body">
+                                <label htmlFor="forum-name">New Forum</label>
+                            <input
+                                id="forum-name"
+                                value={forumName}
+                                onChange={event => setForumName(event.target.value)}
+                                required
+                            />
+                            <button type="submit" className="btn">Add Forum</button>
+                            </div>
+                            
+                        </form>
+                    </aside>
+                </div>
+                <main className="forum-content">
+                    <img
+                        src="/public/images/images1.jpg"
+                        alt=""
+                        className="forum-banner"
                         />
-                    <button type="submit">Add Forum</button>
-                </form>
-            </aside>
-            <main className="forum-content">
-                <h2>{selectedForum?.name}</h2>
-                {forumId && (
-                    <PostEditor key = {forumId} onPublish={createPost} />
-                )}
-                <h2>Posts</h2>
-                {/*creates one "article" per post */}
-                {posts.map(post => (
-                    <article className="forum-post" key={post._id}>
-                        <h3>{post.title}</h3>
-                        <p className="post-author">{post.author}</p>
-                        <div>
-                            {/*Show markdown and no html */}
-                            <Markdown skipHtml>{post.body}</Markdown>
-                        </div>
-                    </article>
-                ))}
-            </main>
-        </div>
-    )
+                    <div className="forum-heading">
+                        <h2>w/{selectedForum?.name}</h2>
+                        {/* new post button and functionality */}
+                        {forumId && (
+                            <>
+                            <div className="forum-actions">
+                                <button type="button" className="btn" onClick={() => setShowEditor(true)}>
+                                    New Post
+                                </button>
+                                <button type="button" className="btn">
+                                    Leave
+                                </button>
+                                <PostEditor
+                                    key={forumId}
+                                    show={showEditor}
+                                    onClose={() => setShowEditor(false)}
+                                    onPublish={createPost}
+                                />
+                                </div>
+                            </>
+                        )}
+                    </div>
+                        <hr className="posts-divider" />
 
+                    {/*creates one "article" per post */}
+
+                    <div className="post-feed">
+                        {posts.map(post => (
+                            <article className="card post-card mb-3" key={post._id}>
+                                <div className="card-body">
+                                    <h3>{post.title}</h3>
+                                    <p className="post-author">{post.author}</p>
+                                    <div>
+                                        {/*Show markdown and no html */}
+                                        <Markdown skipHtml>{post.body}</Markdown>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </main>
+            </div>
+        </>
+    );
 }
