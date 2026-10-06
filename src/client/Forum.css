@@ -1,0 +1,158 @@
+body {
+    font-family: sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+.forum-page {
+    min-height: 100vh;
+    display: flex;
+    background: white;
+    color: black;
+    align-items: flex-start;
+}
+#forumSidebar {
+    flex-shrink: 0;
+}
+.forum-sidebar {
+    width: 250px;
+    padding: 20px 16px;
+    background:white;
+    color: #ac2b37;
+    border-right: 1px solid #e5e5e5;
+    flex-shrink: 0;
+    min-height: 100vh;
+}
+.forum-sidebar h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    text-align: center;
+}
+
+.forum-sidebar button {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+
+
+.forum-content {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+}
+
+
+.forum-content h2, h3{
+    color: #ac2b37;
+}
+
+#post-box .ProseMirror {
+    padding: 10px;
+    border: 1px solid #ac2b37;
+}
+
+.forum-post {
+    padding: 20px;
+    border-bottom: 1px solid #ac2b37;
+}
+
+.new-forum{
+    margin-top: 20px;
+}
+.new-forum input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.post-card {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 16px;
+    overflow-wrap: anywhere;
+   margin-inline: auto;
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.site-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ac2b37;
+}
+
+.btn {
+    color: white;
+    background-color: #ac2b37;
+    
+}
+
+.forum-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    max-width: 700px;
+    width:100%;
+    margin: 0 auto 20px;
+
+}
+
+.forum-heading h2 {
+    margin: 0;
+}
+
+.forum-banner {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+}
+
+.posts-divider {
+    max-width: 1000px;
+    margin: 24px auto;
+    border: 0;
+    border-top: 1px solid #ccc;
+    opacity: 1;
+}
+
+.forum-heading,
+.post-feed {
+    width:90%;
+    max-width: 900px;
+    margin-inline:auto;
+}
+
+.forum-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.forum-actions button {
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+}
