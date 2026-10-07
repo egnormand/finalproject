@@ -1,0 +1,30 @@
+.post-comment-section {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.comment-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.comment-toggle:hover {
+    color: #212529;
+}
+
+.comment-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+.comment-toggle i {
+    font-size: 1rem;
+}

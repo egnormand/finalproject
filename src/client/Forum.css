@@ -13,19 +13,18 @@ select {
     display: flex;
     background: white;
     color: black;
-    align-items: flex-start;
+    align-items: stretch;
 }
 #forumSidebar {
-    flex-shrink: 0;
+    border-right: 1px solid #e5e5e5;
 }
 .forum-sidebar {
     width: 250px;
     padding: 20px 16px;
     background:white;
     color: #ac2b37;
-    border-right: 1px solid #e5e5e5;
+    border-right: none;
     flex-shrink: 0;
-    min-height: 100vh;
 }
 .forum-sidebar h1 {
     font-size: 20px;
@@ -98,10 +97,12 @@ select {
     color: #ac2b37;
 }
 
-.btn {
-    color: white;
-    background-color: #ac2b37;
-    
+.btn:not(.btn-outline-danger) {
+    --bs-btn-color: white;
+    --bs-btn-bg: #ac2b37;
+
+    --bs-btn-hover-color: white;
+    --bs-btn-hover-bg: darkred;
 }
 
 .forum-heading {
@@ -124,7 +125,7 @@ select {
     display: block;
     width: 100%;
     max-width: 1000px;
-    height: 180px;
+    height: 250px;
     object-fit: cover;
     border-radius: 12px;
     margin: 0 auto 20px;
@@ -155,4 +156,36 @@ select {
     width: auto;
     margin: 0;
     white-space: nowrap;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.title-row .pin-button {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    padding: 0.25rem;
+    color: #6c757d;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.title-row .pin-button:hover,
+.title-row .pin-button.is-pinned {
+    color: #a6192e;
+}
+
+.title-row .pin-button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.forum-welcome {
+    width: 100%;
+    text-align: center;
 }
