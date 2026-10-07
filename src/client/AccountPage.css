@@ -66,13 +66,14 @@
 
 .row {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 2fr) auto;
   align-items: center;
   column-gap: 12px;
 }
 
 .row p {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .row button,
@@ -85,7 +86,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 8px;
   width: 100%;
   margin-bottom: 10px;
 }

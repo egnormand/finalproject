@@ -168,7 +168,7 @@ export default function AccountDisplay() {
                             <div className="row">
                                 <p>Last Name:</p>
                                 <p>{name}</p>
-                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change last name</button>
+                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change Last Name</button>
                             </div>
                             <div className="row">
                                 <p>Email:</p>
