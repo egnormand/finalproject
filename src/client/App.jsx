@@ -3,10 +3,12 @@ import Forum from "./Forum.jsx";
 import SignIn from "./SignIn.jsx";
 import AccountPage from "./AccountPage.jsx";
 
+
 function App() {
   const [userEmail, setUserEmail] = useState(null);
   const [sessionChecked, setSessionChecked] = useState(false);
-  const [activeView, setActiveView] = useState("forum");
+  const [acctInfo, setAcctInfo] = useState(null);
+
 
   useEffect(() => {
     let active = true;
@@ -20,56 +22,50 @@ function App() {
         if (active) setSessionChecked(true);
       });
 
+
     return () => {
       active = false;
     };
   }, []);
+
 
   async function handleSignOut() {
     const response = await fetch("/logout", { method: "POST" });
     if (response.ok) setUserEmail(null);
   }
 
+
+  async function handleAcctInfo() {
+    setAcctInfo(true);
+  }
+
+
   if (!sessionChecked) {
     return <main className="container mt-4" role="status">Checking sign-in...</main>;
   }
 
+
   if (!userEmail) return <SignIn />;
+
+
+  if (acctInfo) return <AccountPage />;
+
 
   return (
     <>
       <header className="container-fluid d-flex justify-content-end align-items-center gap-3 border-bottom bg-white py-2">
-        <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => setActiveView("forum")}
-        >
-          Forums
-        </button>
-
-        <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => setActiveView("accountpage")}
-        >
-          Account Page
-        </button>
         <span>{userEmail}</span>
+        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleAcctInfo}>
+          Account Info
+        </button>
         <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleSignOut}>
           Sign Out
         </button>
       </header>
-      <main>
-        {activeView === "forum" ? (
-            <Forum />
-        ) : activeView === "accountpage" ? (
-            <AccountPage />
-        ) : (
-            <SignIn />
-        )}
-      </main>
+      <Forum />
     </>
   );
 }
+
 
 export default App;
