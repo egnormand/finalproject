@@ -114,17 +114,60 @@ const forums = [
 */
 
 
-
+//gets forums that a user is in
 app.get("/api/forums", async (req, res) => {
-  try {
-    const forums = await forumsCollection.find({}).sort({name: 1}).toArray();
-    res.json(forums);
+  if (!req.session?.user) {
+    return res.status(401).json({
+      message: "Sign in to create a forum."
+    });
+  }
+  try{
+    const user = req.session?.user ? await signinCollection.findOne({email: req.session.user}) : null;
+    const joinedForums = user?.joinedForums || [];
+    const forums = await forumsCollection.find({}).sort({name:1}).toArray();
+    res.json(forums.map(forum => ({
+      id: forum.id,
+      name: forum.name,
+      joined: joinedForums.includes(forum.id)
+    })));
   } catch (error) {
-    console.error("could not create forum:", error);
-    return res.status(400).json({message: "Could not create forum"});
+    console.log(error);
+    res.status(500).json({message: "Could not load forums"})
   }
 })
 
+//user join/leave forum logic
+app.put("/api/forums/:id/members", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({message: "You are not logged in!"});}
+    const {joined} = req.body;
+    try {
+      const forum = await forumsCollection.findOne({
+        id:req.params.id
+      });
+      if (!forum) {
+        return res.status(401).json({message: "No forum found"});
+      }
+      let update;
+      if (joined) {
+        update = {
+          $addToSet: {joinedForums: forum.id}
+        }
+        } else {
+        update = {
+          $pull: {joinedForums: forum.id}
+        }
+      };
+      const result = await signinCollection.updateOne({email: req.session.user}, update)
+
+
+
+      res.json({joined});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message: "Could not load forums"})
+  }
+});
 //create a new forum
 app.post("/api/forums", async (req, res) => {
   const {name} = req.body;
@@ -136,7 +179,15 @@ app.post("/api/forums", async (req, res) => {
   };
   try {
     await forumsCollection.insertOne(forum);
-    res.json(forum);
+    await signinCollection.updateOne(
+        {email: req.session.user},
+        {$addToSet: {joinedForums: forum.id}}
+    )
+    res.status(201).json({
+      id: forum.id,
+      name: forum.name,
+      joined: true
+    });
   } catch (error) {
     console.error("Could not load forums:", error);
     return res.status(500).json({ message: "Could not load forum." });
@@ -173,6 +224,8 @@ app.post("/api/posts", async (req, res) => {
     if (typeof forumId !== "string" || !(await forumsCollection.findOne({ id: forumId }))) {
       return res.status(400).json({ message: "Choose a valid forum." });
     }
+    const user = req.session?.user ? await signinCollection.findOne({email:req.session.user}) : null;
+    post.authorName = user?.name || "Author";
     const result = await forumPostsCollection.insertOne(post);
     return res.status(201).json({ _id: result.insertedId, ...post });
   } catch (error) {

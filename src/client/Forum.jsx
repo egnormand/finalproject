@@ -13,22 +13,24 @@ export default function Forum() {
     const [refresh, setRefresh] = useState(0);
     const [forumName, setForumName] = useState("");
     const [showEditor, setShowEditor] = useState(false);
+    const [forumExplorer, setForumExplorer] = useState(false);
+    const [membershipStatus, setMembershipStatus] = useState(false);
 
     useEffect(() => {
         fetch("/api/forums")
             .then(response => response.json())
             .then(data => {
                 setForums(data);
-                setForumId(data[0]?.id || "");
-            });
+                setForumId(data[0]?.id || "");            });
     }, []);
     //load posts
     useEffect(() => {
+        setPosts([]);
+
         //make sure forum is selected
         if (!forumId) return;
         let active = true;
         //get rid of previous posts when the page loads
-        setPosts([]);
         fetch(`/api/posts?forumId=${forumId}`)
             .then(response => response.json())
             .then(data => {
@@ -82,12 +84,50 @@ export default function Forum() {
             setForums(current => [...current, forum]);
             setForumId(forum.id);
             setForumName("");
+            setForumExplorer(false);
+            setShowEditor(false);
         } catch (error) {
             console.log(error);
             alert("Could not create forum.");
         }
     }
+    async function changeMembershipStatus(forum, joined) {
+        if (membershipStatus) return;
+
+        if (joined && !window.confirm(`Join ${forum.name}?`)) {
+            return;
+        }
+
+        setMembershipStatus(true);
+
+        try {
+            const response = await fetch(`/api/forums/${forum.id}/members`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ joined })
+            });
+
+            const data = await response.json();
+            setForums(current =>
+                current.map(item =>
+                    item.id === forum.id
+                        ? { ...item, joined }
+                        : item
+                )
+            );
+            setShowEditor(false);
+            setForumExplorer(false);
+            setForumId(joined ? forum.id : "");
+        } catch {
+            alert("Could not change membership status.");
+        } finally {
+            setMembershipStatus(false);
+        }
+    }
     const selectedForum = forums.find(forum => forum.id === forumId);
+    const visibleForums = forums.filter(forum =>
+        forumExplorer ? !forum.joined : forum.joined
+    );
     return (
         <>
             <header className="site-header">
@@ -107,18 +147,39 @@ export default function Forum() {
             <div className="forum-page">
                 <div id="forumSidebar" className="collapse collapse-horizontal show">
                     <aside className="forum-sidebar">
-                        <h1>Forums</h1>
+                        <h1>{forumExplorer ? "Explore" : "Forums"}</h1>
+
                         <nav className="forum-nav">
-                            {/*creates the button for each forum*/}
-                            {forums.map(forum => (
+                            {visibleForums.map(forum => (
                                 <button
                                     key={forum.id}
-                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
-                                    onClick={() => setForumId(forum.id)}
+                                    type="button"
+                                    disabled={membershipStatus}
+                                    className={
+                                        forum.id === forumId
+                                            ? "forum-button selected btn"
+                                            : "forum-button btn"
+                                    }
+                                    onClick={() => {
+                                        if (forumExplorer) {
+                                            changeMembershipStatus(forum, true);
+                                        } else {
+                                            setShowEditor(false);
+                                            setForumId(forum.id);
+                                        }
+                                    }}
                                 >
                                     {forum.name}
                                 </button>
                             ))}
+
+                            {visibleForums.length === 0 && (
+                                <p>
+                                    {forumExplorer
+                                        ? "No more forums to join."
+                                        : "Explore forums to join one."}
+                                </p>
+                            )}
                         </nav>
                         <form className="new-forum card" onSubmit={createForum}>
                             <div className="card-body">
@@ -133,6 +194,19 @@ export default function Forum() {
                             </div>
                             
                         </form>
+                        <button
+                        type="button"
+                        className="btn"
+                        disabled={membershipStatus}
+                        onClick={() => {
+                            setForumExplorer(!forumExplorer);
+                            setShowEditor(false);
+                            setForumId("");
+                        }}
+                    >
+                        {forumExplorer ? "Back to My Forums" : "Explore Forums"}
+                    </button>
+
                     </aside>
                 </div>
                 <main className="forum-content">
@@ -150,7 +224,12 @@ export default function Forum() {
                                 <button type="button" className="btn" onClick={() => setShowEditor(true)}>
                                     New Post
                                 </button>
-                                <button type="button" className="btn">
+                                <button
+                                    type="button"
+                                    className="btn"
+                                    disabled={membershipStatus}
+                                    onClick={() => changeMembershipStatus(selectedForum, false)}
+                                >
                                     Leave
                                 </button>
                                 <PostEditor
@@ -172,7 +251,7 @@ export default function Forum() {
                             <article className="card post-card mb-3" key={post._id}>
                                 <div className="card-body">
                                     <h3>{post.title}</h3>
-                                    <p className="post-author">{post.author}</p>
+                                    <p className="post-author">{post.authorName ||post.author }</p>
                                     <div>
                                         {/*Show markdown and no html */}
                                         <Markdown skipHtml>{post.body}</Markdown>
