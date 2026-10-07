@@ -1,0 +1,161 @@
+
+/* Keep the sidebar and account content inside the same white layout. */
+.account-page {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+  background-color: white;
+}
+
+#forumSidebar {
+  flex-shrink: 0;
+}
+
+/* Style page content */
+.main {
+  margin: 20px;
+  padding: 20px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 10px;
+  min-height: 100vh;
+  color: black;
+  background-color: white;
+  text-align: left;
+}
+
+.main h1 {
+   color: #ac2b37;
+   margin: 0px 10px 10px 20px;
+}
+
+.main h2 {
+  color: #ac2b37;
+  top: 0;
+  background-color: white;
+  z-index: 2;
+}
+
+.main h3 {
+   color: #b16d74;
+   margin-top: -15px;
+}
+
+.main ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.info {
+  margin: 40px;
+}
+
+.info-box{
+  width:90%;
+  max-width: 900px;
+  margin-inline:auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.info-box + .info-box {
+  margin-top: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 2fr) auto;
+  align-items: center;
+  column-gap: 12px;
+}
+
+.row p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.row button,
+.row2 button {
+  justify-self: end;
+  margin-right: 15px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.row2 li {
+  margin: 0;
+}
+
+.row2:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.forum-action-button {
+  width: auto;
+  height: 36px;
+  margin: 3px;
+  white-space: nowrap;
+  padding: 4px 8px;
+  font-size: 15px;
+  color: white;
+  background-color:#ac2b37;
+  border: 0px;
+  border-radius: 5px;
+}
+
+.forum-action-button:hover{
+  background:#89212b;
+}
+
+.account-content h2, h3{
+    color: #ac2b37;
+}
+
+#post-box .ProseMirror {
+    padding: 10px;
+    border: 1px solid #ac2b37;
+}
+
+
+.editFormDiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+.editFormDiv legend {
+  color: #ac2b37;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.box2 {
+  background: white;
+  color: black;
+  border: 1px solid #ac2b37;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.box2 fieldset {
+  border: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
