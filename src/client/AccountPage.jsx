@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import "./AccountPage.css"
+import "./Forum.css"
 
 const fakeFollowingForums = [
     { id: "fake-general", name: "General Discussion" },
@@ -114,56 +115,89 @@ export default function AccountDisplay() {
 
     return (
         <>
-        <div className="account-page">
-            <div className="account-sidebar">
-                <h1>Forums</h1>
-                {/*creates the button for each forum*/}
-                {forums.map(forum => (
-                    <button key={forum.id} className={forum.id === forumId ? "forum-button selected" : "forum-button"} onClick={() => setForumId(forum.id)}>
-                        {forum.name}
-                    </button>
-                ))}
-                <div className="special-button">
-                    <button>Account Info</button>
+            <header className="site-header">
+                <button
+                    className="btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#forumSidebar"
+                    aria-expanded="true"
+                    aria-controls="forumSidebar"
+                    aria-label="Toggle forum sidebar"
+                >
+                    ☰
+                </button>
+                <span className="site-name">WPI Forums</span>
+            </header>
+            <div className="account-page">
+                <div id="forumSidebar" className="collapse collapse-horizontal show">
+                    <aside className="forum-sidebar">
+                        <h1>Forums</h1>
+                        <nav className="forum-nav">
+                            {/*creates the button for each forum*/}
+                            {forums.map(forum => (
+                                <button
+                                    key={forum.id}
+                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
+                                    onClick={() => setForumId(forum.id)}
+                                >
+                                    {forum.name}
+                                </button>
+                            ))}
+                        </nav>
+                    </aside>
                 </div>
-            </div>
-
             <div className="main">
-                <h1>Account Info</h1>
-                <h2>User Info</h2>
-                    <div className="row">
-                        <p>Name:</p>
-                        <p>{name}</p>
-                        <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Edit?</button>
-                    </div>
-                <div className="row">
-                    <p>Email:</p>
-                    <p>{email}</p>
-                    <button className="forum-action-button" onClick={() => editEmailForm()}>Edit?</button>
+                <img
+                    src="/public/images/images1.jpg"
+                    alt=""
+                    className="forum-banner"
+                />
+                <div className='forum-heading'>
+                   <h2>Account Info</h2>
                 </div>
-                <div className="row">
-                    <p>Password:</p>
-                    <p aria-label="Password hidden">********</p>
-                    <button className="forum-action-button" onClick={() => editPassForm()}>Edit?</button>
-                </div>
-                {userError && <p role="alert">{userError}</p>}
-
-                <h2>Following</h2>
-                <h3>Total: {followingForums.length}</h3>
-                <ul>
-                    {followingForums.map((forum, index) => (
-                        <div key={forum.id ?? forum._id ?? index} className="row2">
-                        <li>
-                            {typeof forum === "string" ? forum : forum.name ?? forum.forumName}
-                        </li>
-                        <button className="forum-action-button">View</button>
-                        <button className="forum-action-button">Leave</button>
+                <hr className="posts-divider" />
+                <div className = "info">
+                    <div className="info-box">
+                        <h2>User Info</h2>
+                            <div className="row">
+                                <p>First Name:</p>
+                                <p>{name}</p>
+                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change First Name</button>
+                            </div>
+                            <div className="row">
+                                <p>Last Name:</p>
+                                <p>{name}</p>
+                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change Last Name</button>
+                            </div>
+                            <div className="row">
+                                <p>Email:</p>
+                                <p>{email}</p>
+                                <button className="forum-action-button" onClick={() => editEmailForm()}>Change Email</button>
+                            </div>
+                            <div className="row">
+                                <p>Password:</p>
+                                <p aria-label="Password hidden">********</p>
+                                <button className="forum-action-button" onClick={() => editPassForm()}>Change Password</button>
+                            </div>
                         </div>
-                    ))}
-                </ul>
+                    <div className="info-box">
+                        <h2>Following Count: {followingForums.length}</h2>
+                        <ul>
+                            {followingForums.map((forum, index) => (
+                                <div key={forum.id ?? forum._id ?? index} className="row2">
+                                <li>
+                                    {typeof forum === "string" ? forum : forum.name ?? forum.forumName}
+                                </li>
+                                <button className="forum-action-button">View</button>
+                                <button className="forum-action-button">Leave</button>
+                                </div>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        
 
         {editUserPopup && (
             <div className="box2 editFormDiv">
