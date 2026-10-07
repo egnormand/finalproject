@@ -87,7 +87,7 @@ app.get("/current-user", async (req, res) => {
 
   const user = await signinCollection.findOne(
     { email: req.session.user },
-    { projection: { _id: 1, name: 1, email: 1, passwordHash: 1, forums: 1 } }
+    { projection: { _id: 1, name: 1, email: 1, passwordHash: 1, joinedForums: 1 } }
   );
 
 
@@ -106,7 +106,7 @@ app.get("/current-user", async (req, res) => {
     name: user.name,
     email: user.email,
     passwordHash: user.passwordHash,
-    forums: Array.isArray(user.forums) ? user.forums : [],
+    joinedForums: Array.isArray(user.joinedForums) ? user.joinedForums : [],
   });
 });
 
@@ -142,7 +142,29 @@ app.post('/update', async (req, res) => {
     }
 });
 
+app.get("/api/acctPageForums", async (req, res) => {
+    try {
+        const user = req.session?.user
+            ? await signinCollection.findOne({ email: req.session.user })
+            : null;
 
+        const joinedForums = user?.joinedForums || [];
+
+        const forums = await forumsCollection
+            .find({ id: { $in: joinedForums } })
+            .sort({ name: 1 })
+            .toArray();
+
+        res.json(forums.map(forum => ({
+            id: forum.id,
+            name: forum.name
+        })));
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Could not load forums" });
+    }
+});
 
 
 

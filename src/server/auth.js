@@ -96,6 +96,7 @@ export function configureAuthentication(app, {
                 email,
                 passwordHash: await bcrypt.hash(password, 12),
                 createdAt: new Date(),
+                joinedForums: []
             };
             const result = await signinCollection.insertOne(user);
             user._id = result.insertedId;

@@ -11,18 +11,14 @@ const fakeFollowingForums = [
 
 
 export default function AccountPage() {
-    const [forums] = useState([
-        { id: 1, name: "General Discussion" },
-        { id: 2, name: "Announcements" },
-        { id: 3, name: "Homework Help" },
-        { id: 4, name: "Off-Topic Chat" },
-    ]);
     const [forumId, setForumId] = useState(null);
     const [name, setName] = useState("Loading...");
     const [fullName, setFullName] = useState("Loading...");
     const [FName, setFName] = useState("Loading...");
     const [LName, setLName] = useState("Loading...");
     const [email, setEmail] = useState("Loading...");
+    const [joinedForums, setJoinedForums] = useState([]);
+    const [forums, setForums] = useState([]);
     const [password, setPassword] = useState("Loading...");
     const [userId, setUserId] = useState(null);
     const [followingForums, setFollowingForums] = useState(fakeFollowingForums);
@@ -53,18 +49,36 @@ export default function AccountPage() {
                 setLName(name[1]);
                 setEmail(user.email);
                 setPassword(user.passwordHash);
-                setFollowingForums(user.forums.length > 0 ? user.forums : fakeFollowingForums);
+                setJoinedForums(user.joinedForums);
             } catch (error) {
                 setUserError(error.message);
                 setName("Unavailable");
                 setEmail("Unavailable");
                 setPassword("Unavailable");
-                setFollowingForums(fakeFollowingForums);
+                setJoinedForums("Unavailable");
+            }
+        }
+
+        async function loadForums() {
+            try {
+                const response = await fetch("/api/forums");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load the forums.");
+                }
+
+                const forumData = await response.json();
+
+                setForums(forumData);
+
+            } catch (error) {
+                console.error("Error loading forums:", error);
             }
         }
 
 
         loadCurrentUser();
+        loadForums();
     }, []);
 
 
@@ -176,16 +190,21 @@ export default function AccountPage() {
                     <aside className="forum-sidebar">
                         <h1>Forums</h1>
                         <nav className="forum-nav">
-                            {/*creates the button for each forum*/}
-                            {forums.map(forum => (
-                                <button
-                                    key={forum.id}
-                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
-                                    onClick={() => setForumId(forum.id)}
-                                >
-                                    {forum.name}
-                                </button>
-                            ))}
+                            {forums
+                                .filter(forum => joinedForums.includes(forum.id))
+                                .map(forum => (
+                                    <button
+                                        key={forum.id}
+                                        className={
+                                            forum.id === forumId
+                                                ? "forum-button selected btn"
+                                                : "forum-button btn"
+                                        }
+                                        onClick={() => setForumId(forum.id)}
+                                    >
+                                        {forum.name}
+                                    </button>
+                                ))}
                         </nav>
                     </aside>
                 </div>
@@ -224,17 +243,30 @@ export default function AccountPage() {
                             </div>
                         </div>
                     <div className="info-box">
-                        <h2>Following Count: {followingForums.length}</h2>
+                        <h2>Following Count: {joinedForums.length}</h2>
                         <ul>
-                            {followingForums.map((forum, index) => (
-                                <div key={forum.id ?? forum._id ?? index} className="row2">
-                                <li>
-                                    {typeof forum === "string" ? forum : forum.name ?? forum.forumName}
-                                </li>
-                                <button className="forum-action-button">View</button>
-                                <button className="forum-action-button">Leave</button>
-                                </div>
-                            ))}
+                            {joinedForums.map((forumId, index) => {
+                                const forum = forums.find(forum => forum.id === forumId);
+
+                                return (
+                                    <div key={forumId ?? index} className="row2">
+                                        <li>
+                                            {forum ? forum.name : "Forum not found"}
+                                        </li>
+
+                                        <button
+                                            className="forum-action-button"
+                                            onClick={() => forum && setForumId(forum.id)}
+                                        >
+                                            View
+                                        </button>
+
+                                        <button className="forum-action-button">
+                                            Leave
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </ul>
                     </div>
                 </div>
