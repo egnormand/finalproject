@@ -116,11 +116,6 @@ const forums = [
 
 //gets forums that a user is in
 app.get("/api/forums", async (req, res) => {
-    if (!req.session?.user) {
-        return res.status(401).json({
-            message: "Sign in to create a forum."
-        });
-    }
     try {
         const user = req.session?.user ? await signinCollection.findOne({email: req.session.user}) : null;
         const joinedForums = user?.joinedForums || [];
@@ -138,6 +133,7 @@ app.get("/api/forums", async (req, res) => {
 
 //user join/leave forum logic
 app.put("/api/forums/:id/members", async (req, res) => {
+
     if (!req.session.user) {
         return res.status(401).json({message: "You are not logged in!"});
     }
@@ -171,6 +167,11 @@ app.put("/api/forums/:id/members", async (req, res) => {
 });
 //create a new forum
 app.post("/api/forums", async (req, res) => {
+    if (!req.session?.user) {
+        return res.status(401).json({
+            message: "Sign in to create a forum."
+        });
+    }
     const {name} = req.body;
     if (typeof name !== "string" || !name.trim()) {
         return res.status(400).json({message: "Enter a forum name."});
