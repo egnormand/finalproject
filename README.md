@@ -28,7 +28,7 @@ https://finalproject-ag9e.onrender.com
 
 ## Technology
 
-- Node.js for running the backend of the application. Express was used to create API routes which were connected to MongoDB in order to retrieve stored data.
+- Node.js for running the backend of the application. Express was used to create API routes which were connected to MongoDB in order to retrieve and display stored data.
 - MongoDB 
 - cookie-session for browser sessions: cookie-session is used for browser sessions because it stores session data in a signed, HTTP-only cookie so the app can keep track of logged-in users securely and efficiently without storing large session data on the server.
 - bcryptjs for password hashing: bcryptjs is used for password hashing because it creates a salted, adaptive hash that is slow to brute-force, making it a secure way to protect user passwords before storing them in the database.
