@@ -238,7 +238,7 @@ export default function AccountPage({ directBack, viewForum }) {
                 </div>
             <div className="main">
                 <img
-                    src="/public/images/images1.jpg"
+                    src="/public/images/wpi2.png"
                     alt=""
                     className="forum-banner"
                 />
@@ -262,13 +262,13 @@ export default function AccountPage({ directBack, viewForum }) {
                             <div className="row">
                                 <p>Email:</p>
                                 <p>{email}</p>
-                                <button className="forum-action-button" onClick={() => editEmailForm()}>Change Email</button>
+                                <button className="forum-action-button" style={{ width: "154px" }} onClick={() => editEmailForm()}>Change Email</button>
                             </div>
-                            <div className="row">
+                            {/* <div className="row">
                                 <p>Password:</p>
                                 <p aria-label="Password hidden">********</p>
                                 <button className="forum-action-button" onClick={() => editPassForm()}>Change Password</button>
-                            </div>
+                            </div> */}
                         </div>
                     <div className="info-box">
                         <h2>Following Count: {joinedForums.length}</h2>
