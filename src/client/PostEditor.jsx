@@ -61,10 +61,10 @@ export default function PostEditor({ show, onClose, onPublish }) {
                 <div className={"post-editor"}>
                     <h3>Create a post</h3>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="title">Title</label>
+                        <label htmlFor="title" style={{ marginRight: "10px" }}>Title</label>
                         <input id="title" value={title} onChange={e => setTitle(e.target.value)} required />
                         <div id="post-box"  ref={setEditorElement} />
-                        <button type="submit" className="Publish btn">
+                        <button type="submit" className="Publish btn mt-2">
                             Publish
                         </button>
                     </form>

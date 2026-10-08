@@ -16,6 +16,7 @@ export default function Forum({ initialForumId }) {
     const [showEditor, setShowEditor] = useState(false);
     const [forumExplorer, setForumExplorer] = useState(false);
     const [membershipStatus, setMembershipStatus] = useState(false);
+    const [pinningId, setPinningId] = useState(null);
 
     useEffect(() => {
         fetch("/api/forums")
@@ -123,9 +124,50 @@ export default function Forum({ initialForumId }) {
             setMembershipStatus(false);
         }
     }
-    function togglePin(postId) {
-        setPosts(current => current.map(post => (post._id === postId ? { ...post, pinned: !post.pinned } : post)));
-    }
+   
+    async function togglePin(postId) {
+        if (pinningId) return;
+
+        const post = posts.find(item => item._id === postId);
+        if (!post) return;
+
+        setPinningId(postId);
+
+        try {
+            const response = await fetch(`/api/posts/${postId}/pin`, {
+                method: "PATCH",
+                headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({pinned: !post.pinned})
+                })
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Could not save pin.");
+                }
+
+                setPosts(current =>
+                    current.map(item =>
+                        item._id === postId
+                        ? {...item, pinned: data.pinned}
+                        : item
+                    )
+                );
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                setPinningId(null);
+            }
+        }
+    
+        function addComments(postId, comment) {
+            setPosts(current =>
+                current.map(post =>
+                    post._id == postId ? { ...post, comments: [...(post.comments || []), comment]} : post
+                        
+                )
+            )
+        }
+
     const sortedPosts = [...posts].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
     const selectedForum = forums.find(forum => forum.id === forumId);
     const visibleForums = forums.filter(forum => (forumExplorer ? !forum.joined : forum.joined));
@@ -191,7 +233,7 @@ export default function Forum({ initialForumId }) {
                         </form>
                         <button
                             type="button"
-                            className="btn"
+                            className="btn mt-2"
                             disabled={membershipStatus}
                             onClick={() => {
                                 setForumExplorer(!forumExplorer);
@@ -255,6 +297,7 @@ export default function Forum({ initialForumId }) {
                                             onClick={() => togglePin(post._id)}
                                             aria-label={post.pinned ? "Unpin post" : "Pin post"}
                                             aria-pressed={Boolean(post.pinned)}
+                                            disabled={pinningId !== null}
                                         >
                                             <i
                                                 className={post.pinned ? "bi bi-pin-fill" : "bi bi-pin"}
@@ -269,7 +312,11 @@ export default function Forum({ initialForumId }) {
                                         <Markdown skipHtml>{post.body}</Markdown>
                                     </div>
 
-                                    <Comments postId={post._id} />
+                                    <Comments 
+                                        postId={post._id}
+                                        comments={post.comments || []}
+                                        onAdded={comment => addComments(post._id, comment)}
+                                         />
                                 </div>
                             </article>
                         ))}

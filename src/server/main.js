@@ -289,9 +289,23 @@ app.post("/api/forums", async (req, res) => {
 
 app.get("/api/posts", async (req, res) => {
     const forumId = req.query.forumId;
+    res.set("Cache-Control", "no-store");
+
     try {
+        const user = req.session?.login && req.session.user ?
+            await signinCollection.findOne(
+                {email:req.session.user},
+                {projection: {pinnedPosts: 1}}
+            )
+            : null;
+        const pinnedPosts = new Set(user?.pinnedPosts || []);
         const posts = await forumPostsCollection.find({forumId}).sort({createdAt: -1, _id: -1}).toArray();
-        return res.json(posts);
+
+        return res.json(posts.map(post => ({
+            ...post,
+            comments: post.comments || [],
+            pinned: pinnedPosts.has(post._id.toString())
+        })));
     } catch (error) {
         console.error("Could not load forum posts:", error.message);
         return res.status(500).json({message: "Could not load forum posts."});
@@ -331,5 +345,71 @@ app.post("/api/posts", async (req, res) => {
     }
 });
 
+// Saving and removing pin functionality for users
+app.patch("/api/posts/:id/pin", requireAuth, async (req, res) => {
+    const {pinned} = req.body ?? {};
 
+    try {
+        const post = await forumPostsCollection.findOne(
+            {_id: new ObjectId(req.params.id)},
+            {projection: {_id: 1}}
+        );
+        
+        //Store IDs as strings
+        const postId = post._id.toString();
+        const update = pinned
+            ? {$addToSet: {pinnedPosts: postId}}
+            : {$pull: {pinnedPosts: postId}};
+        const result = await signinCollection.updateOne(
+            {email: req.session.user},
+            update
+        );
+        return res.json({pinned});
+    } catch (error){
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Could not save pin."
+        });
+    }
+
+
+})
+
+
+app.post("/api/posts/:id/comments", requireAuth, async (req, res) => {
+    const {body} = req.body ?? {};
+
+    try {
+        const user = await signinCollection.findOne(
+            {email: req.session.user},
+            {projection: {name: 1}}
+        );
+
+        if (!user) {
+            return res.status(401).json({
+                message: "Account not found. Please sign in again."
+            });
+        }
+
+        const comment = {
+            _id: new ObjectId(),
+            body: body.trim(),
+            authorName: user.name || "User"
+        }
+
+        const result = await forumPostsCollection.updateOne(
+            {_id: new ObjectId(req.params.id)},
+            {$push: {comments: comment}}
+        )
+        return res.status(201).json(comment); 
+       } catch (error) {
+            console.log(error);
+
+            return res.status(500).json({
+                message: "Could not save comment."
+            })
+       }
+
+}) 
 ViteExpress.listen(app, 3000, () => console.log("Server is listening on port 3000..."));
