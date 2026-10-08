@@ -8,6 +8,7 @@ function App() {
   const [userEmail, setUserEmail] = useState(null);
   const [sessionChecked, setSessionChecked] = useState(false);
   const [acctInfo, setAcctInfo] = useState(null);
+  const [selectedForumId, setSelectedForumId] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -49,9 +50,13 @@ function App() {
 
   if (acctInfo) {
     return (
-      <AccountPage
-        directBack={() => setAcctInfo(false)}
-      />
+        <AccountPage
+            directBack={() => setAcctInfo(false)}
+            viewForum={(forumId) => {
+                setSelectedForumId(forumId);
+                setAcctInfo(false);
+            }}
+        />
     );
   }
 
@@ -66,7 +71,7 @@ function App() {
           Sign Out
         </button>
       </header>
-      <Forum />
+      <Forum initialForumId={selectedForumId}/>
     </>
   );
 }

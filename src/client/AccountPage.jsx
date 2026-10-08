@@ -10,7 +10,7 @@ const fakeFollowingForums = [
 ];
 
 
-export default function AccountPage({ directBack }) {
+export default function AccountPage({ directBack, viewForum }) {
     const [forumId, setForumId] = useState(null);
     const [name, setName] = useState("Loading...");
     const [fullName, setFullName] = useState("Loading...");
@@ -212,12 +212,8 @@ export default function AccountPage({ directBack }) {
             <div className="account-page">
                 <div id="forumSidebar" className="collapse collapse-horizontal show">
                     <aside className="forum-sidebar">
-                        <h1>Return to Main Page</h1>
-                        <nav className="return-nav">
-                            <button type="submit" className="forum-action-button" onClick={handleLeave}>Return</button>
-                        </nav>
                         <h1>Forums</h1>
-                        <nav className="forum-nav">
+                        <nav className="forum-nav" >
                             {forums
                                 .filter(forum => joinedForums.includes(forum.id))
                                 .map(forum => (
@@ -228,11 +224,15 @@ export default function AccountPage({ directBack }) {
                                                 ? "forum-button selected btn"
                                                 : "forum-button btn"
                                         }
-                                        onClick={() => setForumId(forum.id)}
+                                        onClick={() => viewForum(forum.id)}
                                     >
                                         {forum.name}
                                     </button>
                                 ))}
+                        </nav>
+                        <h1>Return to Main Page</h1>
+                        <nav className="return-nav">
+                            <button type="submit" className="forum-action-button" onClick={handleLeave}>Return</button>
                         </nav>
                     </aside>
                 </div>
@@ -284,7 +284,7 @@ export default function AccountPage({ directBack }) {
 
                                         <button
                                             className="forum-action-button"
-                                            onClick={() => forum && setForumId(forum.id)}
+                                            onClick={() => forum && viewForum(forum.id)}
                                         >
                                             View
                                         </button>
