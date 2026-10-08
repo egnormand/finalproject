@@ -189,3 +189,9 @@ select {
     width: 100%;
     text-align: center;
 }
+
+.post-bottom .post-comment-section {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+}
