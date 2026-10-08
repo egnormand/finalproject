@@ -1,47 +1,41 @@
 # WPI Forums
 Nicholas Houghton, Emma Normand, Becca Eiferman, Isaiah Balthazar, Luigi Cardaropoli 
 
-WPI Forums is a student focused web application for creating and joining discussion forums, publishing posts, and discussing posts with comments. The app uses React in the browser, an Express server for its API and authentication, MongoDB Atlas, and email sign-in links for verified sessions.
+WPI Forums is a student focused web application where students can create and join different forums, create posts, and reply to others through comments. The application uses React in the browser, Node.js for server functionality, and MongoDB for persistent storage. Users can sign in with their name, email, and password, and verify their login through an SSO email. 
+
+After signing in you can view forums you can click explore forums to join a forum, post to create a new post, and comment to comment on someone elses post. After creating a post you can also delete it, or pin a post.  You can view your account info in the top right, as well as sign out. 
 
 https://finalproject-ag9e.onrender.com
 ## Instructions to use
+- To use the website first visit the link above. 
+- Since this uses SSO, you will need to create an account with a name, email address, and password. (password needs to be 8 characters)
+- Open the signin link sent to your email in the same browser, and it will  bring you to the logged in forum page
+- You can click the explore forums button on the left to see forums you have not joined. Select one to join it. 
+- After you have joined a forum, you can view the posts on it. You can also click the new forum button after entering a forum name on the left to create a forum
+- When you have joined a forum, you can click new post and enter a title and then body message, then publish. You can also leave a forum
+- You can use comments to reply to someone's post and pins to pin posts to the top for your account. You can also delete posts you own
+- You can also view your account details in the top right and change your name, email, and view the forums you are associated with. 
 
-## Features
-
-- Create an account with a name, email address, and password.
-- Sign in using an email and password, then complete sign-in using a time-limited email link.
-- Reload the original page after clicking the email link in the same browser
-- Browse forums, create a forum, join it, and leave a forum.
-- Publish forum posts using the rich-text editor; post content is stored as Markdown.
-- Comment on posts, pin posts to a personal list, and delete posts authored by the signed-in user.
-- View account details and access account profile controls.
-- Sign out and clear the browser session.
-
-## How sign-in works
-
-1. A user creates an account or submits their existing email and password.
-2. The server checks the password and sends a one-time sign-in link by SMTP. Passwords for newly created accounts are hashed with bcrypt.
-3. The link contains a random token. Only its SHA-256 hash and expiration time are stored in MongoDB.
-4. Opening a valid link consumes its challenge, creates a signed, HTTP-only session cookie, and redirects the browser to /.
-5. The client checks /session. If the session is valid, the forum renders; otherwise the sign-in screen renders.
-6. A session lasts up to 24 hours. Production cookies use the secure option, so production must be served over HTTPS.
 
 ## Technology
 
 - Node.js
-- MongoDB 
+- MongoDB is used for persistent storage to store users, forums, posts, and comments. We access the database through the express server. Posts contain a forum ID to make sure they are associated with a specific forum and each user has a joined forums array to determine what forums they are apart of. 
 - cookie-session for browser sessions: cookie-session is used for browser sessions because it stores session data in a signed, HTTP-only cookie so the app can keep track of logged-in users securely and efficiently without storing large session data on the server.
 - bcryptjs for password hashing: bcryptjs is used for password hashing because it creates a salted, adaptive hash that is slow to brute-force, making it a secure way to protect user passwords before storing them in the database.
 - Nodemailer for SMTP email delivery: Nodemailer is used for SMTP email delivery because it provides a simple and reliable way for a Node.js application to send emails like account verification links, password resets, and notifications through an SMTP server.
 - Bootstrap and Bootstrap Icons
-- ProseMirror packages for the post editor
+- ProseMirror packages was used to show the text editor for creating a post. It renders it in markdown and allows you to bold and italicize text. 
 
 ## Challenges
+- Some challenges we faced were getting the SSO to work on Render as our initial smtp attempts were blocked, and we had to debug this together
+- We also had some challenges with hooking up posts to a users account as the signin logic and post creation logic were not implemented at the same time. 
+- We also had to work together through merge conflicts if multiple people were working on similar work
 
 ## Group Members Responsibilities:
 - Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, and email. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
 - Emma: 
-- Nicholas: 
+- Nicholas: Worked on the main forum display page. Implemented & customized prosemirror packages as the text editor when authoring a post. Created routes, backend, and frontend logic for creating and viewing forum posts, creating forums, exploring and joining/leaving forums, and deleting a post you have created. Worked on basic styling and layout of the forum page. Also connected the users name to display as the author title for a post. 
 - Isaiah:
 - Luigi: For the login setup, use cookie-session to manage authenticated browser sessions, bcryptjs to securely hash and verify user passwords, and Nodemailer to send SMTP-based email verification or password reset links for a complete and secure login flow.
 
