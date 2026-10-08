@@ -7,6 +7,7 @@ After signing in you can view forums you can click explore forums to join a foru
 
 https://finalproject-ag9e.onrender.com
 ## Instructions to use
+
 - To use the website first visit the link above. 
 - Since this uses SSO, you will need to create an account with a name, email address, and password. (password needs to be 8 characters)
 - Open the signin link sent to your email in the same browser, and it will  bring you to the logged in forum page
@@ -19,13 +20,13 @@ https://finalproject-ag9e.onrender.com
 
 ## Technology
 
-- Node.js
 - MongoDB is used for persistent storage to store users, forums, posts, and comments. We access the database through the express server. Posts contain a forum ID to make sure they are associated with a specific forum and each user has a joined forums array to determine what forums they are apart of. 
+- Node.js for running the backend of the application. Express was used to create API routes which were connected to MongoDB in order to retrieve and display stored data.
 - cookie-session for browser sessions: cookie-session is used for browser sessions because it stores session data in a signed, HTTP-only cookie so the app can keep track of logged-in users securely and efficiently without storing large session data on the server.
 - bcryptjs for password hashing: bcryptjs is used for password hashing because it creates a salted, adaptive hash that is slow to brute-force, making it a secure way to protect user passwords before storing them in the database.
 - Nodemailer for SMTP email delivery: Nodemailer is used for SMTP email delivery because it provides a simple and reliable way for a Node.js application to send emails like account verification links, password resets, and notifications through an SMTP server.
-- Bootstrap and Bootstrap Icons
 - ProseMirror packages was used to show the text editor for creating a post. It renders it in markdown and allows you to bold and italicize text. 
+- Bootstrap and Bootstrap Icons for organizing forum posts in cards, and other components within the forum page and for button styling to reduce the amount of hand written CSS. I used icons for the comment and pin buttons to add more aesthetics to the forum posts.
 
 ## Challenges
 - Some challenges we faced were getting the SSO to work on Render as our initial smtp attempts were blocked, and we had to debug this together
@@ -35,8 +36,8 @@ https://finalproject-ag9e.onrender.com
 ## Group Members Responsibilities:
 - Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, and email. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
 - Emma: 
+- Isaiah: Worked on the overall styling and design for the Forum page. Created a pop up to allow users to submit new posts. Added the ability to add comments to different posts on the forum and have them stored in the database so they persist for all users. Added pin functionality. Users can pin posts to the top of their feed and pins are specific to each users account and they persist as well.
 - Nicholas: Worked on the main forum display page. Implemented & customized prosemirror packages as the text editor when authoring a post. Created routes, backend, and frontend logic for creating and viewing forum posts, creating forums, exploring and joining/leaving forums, and deleting a post you have created. Worked on basic styling and layout of the forum page. Also connected the users name to display as the author title for a post. 
-- Isaiah:
 - Luigi: For the login setup, use cookie-session to manage authenticated browser sessions, bcryptjs to securely hash and verify user passwords, and Nodemailer to send SMTP-based email verification or password reset links for a complete and secure login flow.
 
 ## Project Video:
