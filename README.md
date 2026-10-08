@@ -41,7 +41,7 @@ https://finalproject-ag9e.onrender.com
 ## Challenges
 
 ## Group Members Responsibilities:
-- Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, email, and password. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
+- Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, and email. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
 - Emma: 
 - Nicholas: 
 - Isaiah:
