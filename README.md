@@ -24,16 +24,16 @@ https://finalproject-ag9e.onrender.com
 1. A user creates an account or submits their existing email and password.
 2. The server checks the password and sends a one-time sign-in link by SMTP. Passwords for newly created accounts are hashed with bcrypt.
 3. The link contains a random token. Only its SHA-256 hash and expiration time are stored in MongoDB.
-4. Opening a valid link consumes its challenge, creates a signed, HTTP-only session cookie, and redirects the browser to `/`.
-5. The client checks `/session`. If the session is valid, the forum renders; otherwise the sign-in screen renders.
-6. A session lasts up to 24 hours. Production cookies use the `secure` option, so production must be served over HTTPS.
+4. Opening a valid link consumes its challenge, creates a signed, HTTP-only session cookie, and redirects the browser to /.
+5. The client checks /session. If the session is valid, the forum renders; otherwise the sign-in screen renders.
+6. A session lasts up to 24 hours. Production cookies use the secure option, so production must be served over HTTPS.
 
 ## Technology
 
 - Node.js
 - MongoDB 
-- `cookie-session` for browser sessions
-- `bcryptjs` for password hashing
+- cookie-session for browser sessions
+- bcryptjs for password hashing
 - Nodemailer for SMTP email delivery
 - Bootstrap and Bootstrap Icons
 - ProseMirror packages for the post editor
@@ -48,6 +48,6 @@ https://finalproject-ag9e.onrender.com
 - Luigi
 
 ## Project Video:
-
+https://www.youtube.com/watch?v=RBpiQKZ0QHU
 
 
