@@ -28,12 +28,12 @@ https://finalproject-ag9e.onrender.com
 
 ## Technology
 
-- Node.js
+- Node.js for running the backend of the application. Express was used to create API routes which were connected to MongoDB in order to retrieve stored data.
 - MongoDB 
 - cookie-session for browser sessions: cookie-session is used for browser sessions because it stores session data in a signed, HTTP-only cookie so the app can keep track of logged-in users securely and efficiently without storing large session data on the server.
 - bcryptjs for password hashing: bcryptjs is used for password hashing because it creates a salted, adaptive hash that is slow to brute-force, making it a secure way to protect user passwords before storing them in the database.
 - Nodemailer for SMTP email delivery: Nodemailer is used for SMTP email delivery because it provides a simple and reliable way for a Node.js application to send emails like account verification links, password resets, and notifications through an SMTP server.
-- Bootstrap and Bootstrap Icons
+- Bootstrap and Bootstrap Icons for organizing forum posts in cards, and other components within the forum page and for button styling to reduce the amount of hand written CSS. I used icons for the comment and pin buttons to add more aesthetics to the forum posts.
 - ProseMirror packages for the post editor
 
 ## Challenges
@@ -42,7 +42,7 @@ https://finalproject-ag9e.onrender.com
 - Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, and email. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
 - Emma: 
 - Nicholas: 
-- Isaiah:
+- Isaiah: Worked on the overall styling and design for the Forum page. Created a pop up to allow users to submit new posts. Added the ability to add comments to different posts on the forum and have them stored in the database so they persist for all users. Added pin functionality. Users can pin posts to the top of their feed and pins are specific to each users account and they persist as well.
 - Luigi: For the login setup, use cookie-session to manage authenticated browser sessions, bcryptjs to securely hash and verify user passwords, and Nodemailer to send SMTP-based email verification or password reset links for a complete and secure login flow.
 
 ## Project Video:
