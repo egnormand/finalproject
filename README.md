@@ -31,7 +31,7 @@ https://finalproject-ag9e.onrender.com
 ## Challenges
 - Some challenges we faced were getting the SSO to work on Render as our initial smtp attempts were blocked, and we had to debug this together
 - We also had some challenges with hooking up posts to a users account as the signin logic and post creation logic were not implemented at the same time. 
-- We also had to work together through merge conflicts if multiple people were working on similar work
+- We also had to work together through merge conflicts if multiple people were working on similar files and both needed to merge their changes
 
 ## Group Members Responsibilities:
 - Becca: Worked on the functionality of the Account Information page. Created pop-ups allowing the user to edit their first name, last name, and email. Read from the database to display a user’s joined forums on the bottom of the page and on the side buttons. Added functionalities so that the joined forums could be viewed when clicked on and removed when the “Leave” button is clicked.
