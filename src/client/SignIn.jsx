@@ -13,8 +13,11 @@ function SignIn() {
         event.preventDefault();
         const form = event.currentTarget.tagName === 'FORM'
             ? event.currentTarget
-            : event.currentTarget.form;
-        if (!form.reportValidity()) return;
+            : event.currentTarget.form;        const isCreateAccount = action === '/createAcct';
+        if (isCreateAccount && !name.trim()) {
+            setMessage('Enter your full name to create an account.');
+            return;
+        }        if (!form.reportValidity()) return;
 
         setBusy(true);
         setMessage('');
@@ -56,8 +59,8 @@ function SignIn() {
             <form id="signin_form" onSubmit={(event) => handleSubmit(event, '/login')}>
                 <fieldset>
                 <div className="mb-3">
-                    <label htmlFor="name" className="form-label raleway-font">Full Name *:</label>
-                    <input type="text" id="name" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} required />
+                    <label htmlFor="name" className="form-label raleway-font">Full Name:</label>
+                    <input type="text" id="name" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label raleway-font">School Email *:</label>
