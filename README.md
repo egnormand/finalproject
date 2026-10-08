@@ -1,3 +1,11 @@
+What we need:
+A brief description of what you created, and a link to the project itself (two paragraphs of text)
+Any additional instructions that might be needed to fully use your project (login information etc.)
+An outline of the technologies you used and how you used them.
+What challenges you faced in completing the project.
+What each group member was responsible for designing / developing.
+A link to your project video.
+
 # WPI Forums
 
 WPI Forums is a student-focused web application for creating and joining discussion forums, publishing posts, and discussing posts with comments. The app uses React in the browser, an Express server for its API and authentication, MongoDB Atlas for persistence, and email sign-in links for verified sessions.
