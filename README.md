@@ -3,8 +3,6 @@ Nicholas Houghton, Emma Normand, Becca Eiferman, Isaiah Balthazar, Luigi Cardaro
 
 WPI Forums is a student focused web application for creating and joining discussion forums, publishing posts, and discussing posts with comments. The app uses React in the browser, an Express server for its API and authentication, MongoDB Atlas, and email sign-in links for verified sessions.
 
-This repository is a course-project prototype. The setup and deployment steps below describe the current code; the security notes at the end identify work that should be completed before using it with real users or sensitive information.
-
 https://finalproject-ag9e.onrender.com
 ## Instructions to use
 
