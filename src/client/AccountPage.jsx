@@ -219,7 +219,7 @@ export default function AccountPage({ directBack, viewForum }) {
                     </aside>
                 </div>
                 <div className="main">
-                    <img src="/public/images/wpi2.png" alt="" className="forum-banner" />
+                    <img src="/images/wpi2.png" alt="" className="forum-banner" />
                     <div className="forum-heading">
                         <h2>Account Info</h2>
                     </div>

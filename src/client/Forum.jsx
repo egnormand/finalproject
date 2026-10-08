@@ -264,7 +264,7 @@ export default function Forum({ initialForumId, userEmail }) {
                     </aside>
                 </div>
                 <main className="forum-content">
-                    <img src="/public/images/wpi2.png" alt="" className="forum-banner" />
+                    <img src="/images/wpi2.png" alt="" className="forum-banner" />
                     <div className="forum-heading">
                         {selectedForum ? (
                             <h2>w/{selectedForum.name}</h2>
