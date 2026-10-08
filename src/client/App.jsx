@@ -9,7 +9,6 @@ function App() {
   const [sessionChecked, setSessionChecked] = useState(false);
   const [acctInfo, setAcctInfo] = useState(null);
 
-
   useEffect(() => {
     let active = true;
     fetch("/session")
@@ -48,8 +47,13 @@ function App() {
   if (!userEmail) return <SignIn />;
 
 
-  if (acctInfo) return <AccountPage />;
-
+  if (acctInfo) {
+    return (
+      <AccountPage
+        directBack={() => setAcctInfo(false)}
+      />
+    );
+  }
 
   return (
     <>

@@ -10,7 +10,7 @@ const fakeFollowingForums = [
 ];
 
 
-export default function AccountPage() {
+export default function AccountPage({ directBack }) {
     const [forumId, setForumId] = useState(null);
     const [name, setName] = useState("Loading...");
     const [fullName, setFullName] = useState("Loading...");
@@ -82,8 +82,32 @@ export default function AccountPage() {
     }, []);
 
 
+    const handleForumLeave = async (forumId) => {
+        try {
+            const response = await fetch(`/api/forums/${forumId}/members`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ joined: false })
+            });
 
+            if (!response.ok) {
+                throw new Error("Could not leave forum.");
+            }
+            setJoinedForums(current =>
+                current.filter(id => id !== forumId)
+            );
 
+        } catch (error) {
+            console.error("Error leaving forum:", error);
+            alert("Could not leave forum.");
+        }
+    };
+
+    const handleLeave = async () => {
+        directBack();
+    }
     const handleUpdate = async (event, field) => {
       event.preventDefault();
       let value;
@@ -188,6 +212,10 @@ export default function AccountPage() {
             <div className="account-page">
                 <div id="forumSidebar" className="collapse collapse-horizontal show">
                     <aside className="forum-sidebar">
+                        <h1>Return to Main Page</h1>
+                        <nav className="return-nav">
+                            <button type="submit" className="forum-action-button" onClick={handleLeave}>Return</button>
+                        </nav>
                         <h1>Forums</h1>
                         <nav className="forum-nav">
                             {forums
@@ -261,7 +289,7 @@ export default function AccountPage() {
                                             View
                                         </button>
 
-                                        <button className="forum-action-button">
+                                        <button className="forum-action-button" onClick={() => handleForumLeave(forumId)}>
                                             Leave
                                         </button>
                                     </div>
