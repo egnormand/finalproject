@@ -412,4 +412,23 @@ app.post("/api/posts/:id/comments", requireAuth, async (req, res) => {
        }
 
 }) 
-ViteExpress.listen(app, 3000, () => console.log("Server is listening on port 3000..."));
+app.delete("/api/posts/:id", requireAuth, async (req, res) => {
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(401).json({message: "Not a post"});
+    }
+    try {
+        const result = await forumPostsCollection.deleteOne({_id: new ObjectId(req.params.id),  author: req.session.user});
+        if (result.deletedCount === 0) {
+            return res.status(401).json({message: "Not your post"});
+        }
+        return res.status(200).json({message: "Post deleted"});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: "Could not delete post."});
+    }
+})
+
+
+
+const port = Number(process.env.PORT || 3000);
+ViteExpress.listen(app, port, () => console.log(`Server is listening on port ${port}...`));

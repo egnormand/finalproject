@@ -71,7 +71,7 @@ function App() {
           Sign Out
         </button>
       </header>
-      <Forum initialForumId={selectedForumId}/>
+      <Forum initialForumId={selectedForumId} userEmail={userEmail}/>
     </>
   );
 }

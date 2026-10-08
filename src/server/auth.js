@@ -73,7 +73,7 @@ export function configureAuthentication(app, {
 
         req.session.login = true;
         req.session.user = challenge.email;
-        return res.send("Email verified. You are signed in and can close this tab.");
+        return res.redirect(302, "/");
     });
 
     app.post("/createAcct", async (req, res) => {

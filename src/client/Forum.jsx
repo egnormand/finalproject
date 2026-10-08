@@ -6,7 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Comments from "./Comments";
 import "./Forum.css";
 
-export default function Forum({ initialForumId }) {
+export default function Forum({ initialForumId, userEmail }) {
     const [forums, setForums] = useState([]);
     const [forumId, setForumId] = useState(initialForumId || "");
     const [posts, setPosts] = useState([]);
@@ -96,7 +96,7 @@ export default function Forum({ initialForumId }) {
             alert("Could not create forum.");
         }
     }
-
+    //join / leave a forum
     async function changeMembershipStatus(forum, joined) {
         if (membershipStatus) return;
 
@@ -171,6 +171,24 @@ export default function Forum({ initialForumId }) {
     const sortedPosts = [...posts].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
     const selectedForum = forums.find(forum => forum.id === forumId);
     const visibleForums = forums.filter(forum => (forumExplorer ? !forum.joined : forum.joined));
+    //delete a forum post if you own it
+    async function deletePost(postId) {
+        if (!window.confirm("Are you sure you want to delete this post?")) {return;}
+        try {
+            const response  = await fetch(`/api/posts/${postId}`, {
+                method: "DELETE"
+            });
+            //warning if it fails
+            if (!response.ok) {
+                const data = await response.json();
+                alert(data.message || "Could not delete post.");
+                return;
+            }
+            setPosts(current => current.filter(post => post._id !== postId));
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <header className="site-header">
@@ -308,15 +326,25 @@ export default function Forum({ initialForumId }) {
                                     </div>
                                     <p className="post-author">{post.authorName || post.author}</p>
                                     <div>
-                                        {/*Show markdown and no html */}
+                                        {/*Show markdown */}
                                         <Markdown skipHtml>{post.body}</Markdown>
                                     </div>
-
-                                    <Comments 
+                                    <div className="post-bottom d-flex align-items-baseline gap-3 border-top mt-3 pt-2">
+                                        <div className={"flex-grow-1"}>
+                                         <Comments 
                                         postId={post._id}
                                         comments={post.comments || []}
                                         onAdded={comment => addComments(post._id, comment)}
                                          />
+                                        </div>
+                                    {userEmail && post.author === userEmail && (
+                                        <button
+                                            type="button"
+                                            className = "btn btn-sm"
+                                            onClick={() => deletePost(post._id)}
+                                        > Delete</button>
+                                    )}
+                                    </div>
                                 </div>
                             </article>
                         ))}

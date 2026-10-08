@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { schema, defaultMarkdownSerializer } from "prosemirror-markdown";
-import { exampleSetup } from "prosemirror-example-setup";
+import { exampleSetup, buildMenuItems } from "prosemirror-example-setup";
 
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-menu/style/menu.css";
@@ -17,12 +17,15 @@ export default function PostEditor({ show, onClose, onPublish }) {
     const [editorElement, setEditorElement] = useState(null)
     useEffect(() => {
         if (!editorElement) return;
+        const menu = buildMenuItems(schema);
+        const menuContent = menu.fullMenu.map(group => group.filter(item => item  !== menu.insertMenu && item !== menu.toggleLink && item !== menu.toggleCode))
         let state = EditorState.create({
             schema,
             //using example setup from prose mirror docs for now. we could add more features later
             plugins: exampleSetup({
                 schema,
                 floatingMenu: false,
+                menuContent,
             }),
         });
         //makes editor display in the html below
