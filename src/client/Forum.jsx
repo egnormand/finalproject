@@ -1,13 +1,14 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 import Markdown from "react-markdown";
 import PostEditor from "./PostEditor";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Comments from "./Comments";
 import "./Forum.css";
 
-export default function Forum() {
+export default function Forum({ initialForumId }) {
     const [forums, setForums] = useState([]);
-    const [forumId, setForumId] = useState("");
+    const [forumId, setForumId] = useState(initialForumId || "");
     const [posts, setPosts] = useState([]);
     //used to tell the page to load new posts
     const [refresh, setRefresh] = useState(0);
@@ -21,7 +22,9 @@ export default function Forum() {
             .then(response => response.json())
             .then(data => {
                 setForums(data);
-                setForumId(data[0]?.id || "");
+                if (!initialForumId){
+                    setForumId(data[0]?.id || "");
+                }
             });
     }, []);
     //load posts
@@ -50,8 +53,8 @@ export default function Forum() {
         try {
             const response = await fetch("/api/posts", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({forumId, title, body}),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ forumId, title, body }),
             });
             if (!response.ok) {
                 const data = await response.json();
@@ -74,8 +77,8 @@ export default function Forum() {
         try {
             const response = await fetch(`/api/forums/`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({name: forumName}),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: forumName }),
             });
             const forum = await response.json();
             if (!response.ok) {
@@ -105,18 +108,12 @@ export default function Forum() {
         try {
             const response = await fetch(`/api/forums/${forum.id}/members`, {
                 method: "PUT",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({joined})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ joined }),
             });
 
             const data = await response.json();
-            setForums(current =>
-                current.map(item =>
-                    item.id === forum.id
-                        ? {...item, joined}
-                        : item
-                )
-            );
+            setForums(current => current.map(item => (item.id === forum.id ? { ...item, joined } : item)));
             setShowEditor(false);
             setForumExplorer(false);
             setForumId(joined ? forum.id : "");
@@ -126,11 +123,12 @@ export default function Forum() {
             setMembershipStatus(false);
         }
     }
-
+    function togglePin(postId) {
+        setPosts(current => current.map(post => (post._id === postId ? { ...post, pinned: !post.pinned } : post)));
+    }
+    const sortedPosts = [...posts].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
     const selectedForum = forums.find(forum => forum.id === forumId);
-    const visibleForums = forums.filter(forum =>
-        forumExplorer ? !forum.joined : forum.joined
-    );
+    const visibleForums = forums.filter(forum => (forumExplorer ? !forum.joined : forum.joined));
     return (
         <>
             <header className="site-header">
@@ -159,11 +157,7 @@ export default function Forum() {
                                     key={forum.id}
                                     type="button"
                                     disabled={membershipStatus}
-                                    className={
-                                        forum.id === forumId
-                                            ? "forum-button selected btn"
-                                            : "forum-button btn"
-                                    }
+                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
                                     onClick={() => {
                                         if (forumExplorer) {
                                             changeMembershipStatus(forum, true);
@@ -178,11 +172,7 @@ export default function Forum() {
                             ))}
 
                             {visibleForums.length === 0 && (
-                                <p>
-                                    {forumExplorer
-                                        ? "No more forums to join."
-                                        : "Explore forums to join one."}
-                                </p>
+                                <p>{forumExplorer ? "No more forums to join." : "Explore forums to join one."}</p>
                             )}
                         </nav>
                         <form className="new-forum card" onSubmit={createForum}>
@@ -194,9 +184,10 @@ export default function Forum() {
                                     onChange={event => setForumName(event.target.value)}
                                     required
                                 />
-                                <button type="submit" className="btn">Add Forum</button>
+                                <button type="submit" className="btn">
+                                    Add Forum
+                                </button>
                             </div>
-
                         </form>
                         <button
                             type="button"
@@ -210,17 +201,19 @@ export default function Forum() {
                         >
                             {forumExplorer ? "Back to My Forums" : "Explore Forums"}
                         </button>
-
                     </aside>
                 </div>
                 <main className="forum-content">
-                    <img
-                        src="/public/images/images1.jpg"
-                        alt=""
-                        className="forum-banner"
-                    />
+                    <img src="/public/images/wpi2.png" alt="" className="forum-banner" />
                     <div className="forum-heading">
-                        <h2>w/{selectedForum?.name}</h2>
+                        {selectedForum ? (
+                            <h2>w/{selectedForum.name}</h2>
+                        ) : (
+                            <div className="forum-welcome">
+                                <h2>Welcome to WPI Forums</h2>
+                                <p>Please select a forum to get started.</p>
+                            </div>
+                        )}
                         {/* new post button and functionality */}
                         {forumId && (
                             <>
@@ -230,7 +223,7 @@ export default function Forum() {
                                     </button>
                                     <button
                                         type="button"
-                                        className="btn"
+                                        className="btn btn-outline-danger"
                                         disabled={membershipStatus}
                                         onClick={() => changeMembershipStatus(selectedForum, false)}
                                     >
@@ -246,20 +239,37 @@ export default function Forum() {
                             </>
                         )}
                     </div>
-                    <hr className="posts-divider"/>
+                    <hr className="posts-divider" />
 
                     {/*creates one "article" per post */}
 
                     <div className="post-feed">
-                        {posts.map(post => (
+                        {sortedPosts.map(post => (
                             <article className="card post-card mb-3" key={post._id}>
                                 <div className="card-body">
-                                    <h3>{post.title}</h3>
+                                    <div className="title-row">
+                                        <h3>{post.title}</h3>
+                                        <button
+                                            type="button"
+                                            className={`pin-button ${post.pinned ? "is-pinned" : ""}`}
+                                            onClick={() => togglePin(post._id)}
+                                            aria-label={post.pinned ? "Unpin post" : "Pin post"}
+                                            aria-pressed={Boolean(post.pinned)}
+                                        >
+                                            <i
+                                                className={post.pinned ? "bi bi-pin-fill" : "bi bi-pin"}
+                                                aria-hidden="true"
+                                            ></i>
+                                            <span>{post.pinned ? "Unpin" : "Pin"}</span>
+                                        </button>
+                                    </div>
                                     <p className="post-author">{post.authorName || post.author}</p>
                                     <div>
                                         {/*Show markdown and no html */}
                                         <Markdown skipHtml>{post.body}</Markdown>
                                     </div>
+
+                                    <Comments postId={post._id} />
                                 </div>
                             </article>
                         ))}

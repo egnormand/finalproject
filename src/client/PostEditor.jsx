@@ -74,24 +74,3 @@ export default function PostEditor({ show, onClose, onPublish }) {
     );
 }
 
-// import Modal from 'react-bootstrap/Modal';
-
-// export default function PostEditor({ show, onClose, onPublish }) {
-//     // Keep your existing state and functions here
-
-//     return (
-//         <Modal
-//             show={show}
-//             onHide={onClose}
-//             centered
-//             backdrop="static"
-//             aria-label="Create a post"
-//         >
-//             <Modal.Header closeButton />
-
-//             <Modal.Body>
-//                 {/* Your existing heading, form, and buttons go here */}
-//             </Modal.Body>
-//         </Modal>
-//     );
-// }
