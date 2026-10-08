@@ -12,7 +12,11 @@ const app = express();
 
 
 const sessionSecret = process.env.SESSION_SECRET || randomBytes(32).toString("hex");
-const appBaseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+const appBaseUrl = process.env.APP_BASE_URL || (
+    process.env.NODE_ENV === "production"
+        ? "https://finalproject-ag9e.onrender.com"
+        : "http://localhost:3000"
+);
 
 
 app.use(express.json());
