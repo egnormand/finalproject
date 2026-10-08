@@ -5,12 +5,14 @@ WPI Forums is a student focused web application where students can create and jo
 
 After signing in you can view forums you can click explore forums to join a forum, post to create a new post, and comment to comment on someone elses post. After creating a post you can also delete it, or pin a post.  You can view your account info in the top right, as well as sign out. 
 
+For sign in please check your spam folder, or "other" section in Outlook if you do not see the email
+
 https://finalproject-ag9e.onrender.com
 ## Instructions to use
 
 - To use the website first visit the link above. 
 - Since this uses SSO, you will need to create an account with a name, email address, and password. (password needs to be 8 characters)
-- Open the signin link sent to your email in the same browser, and it will  bring you to the logged in forum page
+- Open the signin link sent to your email in the same browser, and it will  bring you to the logged in forum page (Please check your spam folder, or "other" section in Outlook if you do not see the email)
 - You can click the explore forums button on the left to see forums you have not joined. Select one to join it. 
 - After you have joined a forum, you can view the posts on it. You can also click the new forum button after entering a forum name on the left to create a forum
 - When you have joined a forum, you can click new post and enter a title and then body message, then publish. You can also leave a forum
