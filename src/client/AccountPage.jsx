@@ -2,32 +2,36 @@ import { useEffect, useState } from 'react';
 import "./AccountPage.css"
 import "./Forum.css"
 
+
 const fakeFollowingForums = [
     { id: "fake-general", name: "General Discussion" },
     { id: "fake-announcements", name: "Announcements" },
     { id: "fake-homework", name: "Homework Help" },
 ];
 
-export default function AccountDisplay() {
-    const [forums] = useState([
-        { id: 1, name: "General Discussion" },
-        { id: 2, name: "Announcements" },
-        { id: 3, name: "Homework Help" },
-        { id: 4, name: "Off-Topic Chat" },
-    ]);
+
+export default function AccountPage({ directBack, viewForum }) {
     const [forumId, setForumId] = useState(null);
     const [name, setName] = useState("Loading...");
+    const [fullName, setFullName] = useState("Loading...");
+    const [FName, setFName] = useState("Loading...");
+    const [LName, setLName] = useState("Loading...");
     const [email, setEmail] = useState("Loading...");
+    const [joinedForums, setJoinedForums] = useState([]);
+    const [forums, setForums] = useState([]);
     const [password, setPassword] = useState("Loading...");
     const [userId, setUserId] = useState(null);
     const [followingForums, setFollowingForums] = useState(fakeFollowingForums);
     const [userError, setUserError] = useState("");
-    const [editUser, setEditUser] = useState('');
+    const [editFN, setEditFN] = useState('');
+    const [editLN, setEditLN] = useState('');
     const [editEmail, setEditEmail] = useState('');
     const [editPass, setEditPass] = useState('');
-    const [editUserPopup, setEditUserPopup] = useState(null);
+    const [editFNPopup, setEditFNPopup] = useState(null);
+    const [editLNPopup, setEditLNPopup] = useState(null);
     const [editEmailPopup, setEditEmailPopup] = useState(null);
     const [editPassPopup, setEditPassPopup] = useState(null);
+
 
     useEffect(() => {
         async function loadCurrentUser() {
@@ -37,34 +41,89 @@ export default function AccountDisplay() {
                     throw new Error("Unable to load the current user.");
                 }
 
+
                 const user = await response.json();
-               setUserId(user._id); 
-                setName(user.name);
+               setUserId(user._id);
+                const name = user.name.split(" ");
+                setFName(name[0]);
+                setLName(name[1]);
                 setEmail(user.email);
                 setPassword(user.passwordHash);
-                setFollowingForums(user.forums.length > 0 ? user.forums : fakeFollowingForums);
+                setJoinedForums(user.joinedForums);
             } catch (error) {
                 setUserError(error.message);
                 setName("Unavailable");
                 setEmail("Unavailable");
                 setPassword("Unavailable");
-                setFollowingForums(fakeFollowingForums);
+                setJoinedForums("Unavailable");
             }
         }
 
+        async function loadForums() {
+            try {
+                const response = await fetch("/api/forums");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load the forums.");
+                }
+
+                const forumData = await response.json();
+
+                setForums(forumData);
+
+            } catch (error) {
+                console.error("Error loading forums:", error);
+            }
+        }
+
+
         loadCurrentUser();
+        loadForums();
     }, []);
 
 
+    const handleForumLeave = async (forumId) => {
+        try {
+            const response = await fetch(`/api/forums/${forumId}/members`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ joined: false })
+            });
+
+            if (!response.ok) {
+                throw new Error("Could not leave forum.");
+            }
+            setJoinedForums(current =>
+                current.filter(id => id !== forumId)
+            );
+
+        } catch (error) {
+            console.error("Error leaving forum:", error);
+            alert("Could not leave forum.");
+        }
+    };
+
+    const handleLeave = async () => {
+        directBack();
+    }
     const handleUpdate = async (event, field) => {
       event.preventDefault();
       let value;
-      if (field === "name"){
-        value = editUser;
+      let dbField = "";
+      if (field === "FName"){
+        value = `${editFN} ${LName}`;
+        dbField = "name";
+      } else if (field === "LName"){
+        value = `${FName} ${editLN}`;
+        dbField = "name";
       } else if (field === "email"){
         value = editEmail;
+        dbField = "email";
       } else if (field === "password"){
         value = editPass;
+        dbField = "password";
       }
       const response = await fetch("/update", {
         method: "POST",
@@ -73,14 +132,25 @@ export default function AccountDisplay() {
         },
             body: JSON.stringify({
                 _id: userId,
-                field: field,
+                field: dbField,
                 value: value
             })
         });
+
+        console.log("userId being sent:", userId);
+        console.log("field:", dbField);
+        console.log("value:", value);
+
+
         if (response.ok) {
-            if (field === "name"){
-                setName(editUser);
-                setEditUserPopup(null);
+            if (field === "FName"){
+                setFName(editFN);
+                setFullName(`${editFN} ${LName}`);
+                setEditFNPopup(null);
+            } else if (field === "LName"){
+                setLName(editLN);
+                setFullName(`${FName} ${editLN}`);
+                setEditLNPopup(null);
             } else if (field === "email") {
                 setEmail(editEmail);
                 setEditEmailPopup(null);
@@ -92,9 +162,14 @@ export default function AccountDisplay() {
         }
     };
 
-    const editUserForm = function(){
-        setEditUserPopup(true);
-        setEditUser(name);
+
+    const editFNForm = function(){
+        setEditFNPopup(true);
+        setEditFN(FName);
+    }
+    const editLNForm = function(){
+        setEditLNPopup(true);
+        setEditLN(LName);
     }
     const editEmailForm = function(){
         setEditEmailPopup(true);
@@ -105,11 +180,16 @@ export default function AccountDisplay() {
         setEditPass(password);
     }
 
+
     const closeForm = () => {
-        setEditUserPopup(null);
+        setEditFNPopup(null);
+        setEditLNPopup(null);
         setEditEmailPopup(null);
         setEditPassPopup(null);
     }
+
+
+
 
 
 
@@ -133,17 +213,26 @@ export default function AccountDisplay() {
                 <div id="forumSidebar" className="collapse collapse-horizontal show">
                     <aside className="forum-sidebar">
                         <h1>Forums</h1>
-                        <nav className="forum-nav">
-                            {/*creates the button for each forum*/}
-                            {forums.map(forum => (
-                                <button
-                                    key={forum.id}
-                                    className={forum.id === forumId ? "forum-button selected btn" : "forum-button btn"}
-                                    onClick={() => setForumId(forum.id)}
-                                >
-                                    {forum.name}
-                                </button>
-                            ))}
+                        <nav className="forum-nav" >
+                            {forums
+                                .filter(forum => joinedForums.includes(forum.id))
+                                .map(forum => (
+                                    <button
+                                        key={forum.id}
+                                        className={
+                                            forum.id === forumId
+                                                ? "forum-button selected btn"
+                                                : "forum-button btn"
+                                        }
+                                        onClick={() => viewForum(forum.id)}
+                                    >
+                                        {forum.name}
+                                    </button>
+                                ))}
+                        </nav>
+                        <h1>Return to Main Page</h1>
+                        <nav className="return-nav">
+                            <button type="submit" className="forum-action-button" onClick={handleLeave}>Return</button>
                         </nav>
                     </aside>
                 </div>
@@ -162,13 +251,13 @@ export default function AccountDisplay() {
                         <h2>User Info</h2>
                             <div className="row">
                                 <p>First Name:</p>
-                                <p>{name}</p>
-                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change First Name</button>
+                                <p>{FName}</p>
+                                <button type="submit" className="forum-action-button" onClick={() => editFNForm()}>Change First Name</button>
                             </div>
                             <div className="row">
                                 <p>Last Name:</p>
-                                <p>{name}</p>
-                                <button type="submit" className="forum-action-button" onClick={() => editUserForm()}>Change Last Name</button>
+                                <p>{LName}</p>
+                                <button type="submit" className="forum-action-button" onClick={() => editLNForm()}>Change Last Name</button>
                             </div>
                             <div className="row">
                                 <p>Email:</p>
@@ -182,31 +271,68 @@ export default function AccountDisplay() {
                             </div>
                         </div>
                     <div className="info-box">
-                        <h2>Following Count: {followingForums.length}</h2>
+                        <h2>Following Count: {joinedForums.length}</h2>
                         <ul>
-                            {followingForums.map((forum, index) => (
-                                <div key={forum.id ?? forum._id ?? index} className="row2">
-                                <li>
-                                    {typeof forum === "string" ? forum : forum.name ?? forum.forumName}
-                                </li>
-                                <button className="forum-action-button">View</button>
-                                <button className="forum-action-button">Leave</button>
-                                </div>
-                            ))}
+                            {joinedForums.map((forumId, index) => {
+                                const forum = forums.find(forum => forum.id === forumId);
+
+                                return (
+                                    <div key={forumId ?? index} className="row2">
+                                        <li>
+                                            {forum ? forum.name : "Forum not found"}
+                                        </li>
+
+                                        <button
+                                            className="forum-action-button"
+                                            onClick={() => forum && viewForum(forum.id)}
+                                        >
+                                            View
+                                        </button>
+
+                                        <button className="forum-action-button" onClick={() => handleForumLeave(forumId)}>
+                                            Leave
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        {editUserPopup && (
+
+        {editFNPopup && (
             <div className="box2 editFormDiv">
-                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "name")}>
+                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "FName")}>
                 <fieldset>
-                    <legend>Insert New Name</legend>
+                    <legend>Insert New First Name</legend>
                     <div className="mb-3">
-                    <label htmlFor="Name" className="form-label">New Name *:</label>
-                    <input type="text" id="newName" name="newName" className="form-control" value={editUser} onChange={(event) => setEditUser(event.target.value)} required/>
+                    <label htmlFor="Name" className="form-label">New First Name *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editFN} onChange={(event) => setEditFN(event.target.value)} required/>
+                    </div>
+                    <div className="button-container">
+                        <p className="button">
+                            <button type="submit" className="forum-action-button" id="save_update">Update</button>
+                        </p>
+                        <p className="button-container">
+                            <button type="button" className="forum-action-button" onClick={closeForm}>Close</button>
+                        </p>
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+            )}
+
+
+            {editLNPopup && (
+            <div className="box2 editFormDiv">
+                <form id="editForm" className="form-container" onSubmit={(event) => handleUpdate(event, "LName")}>
+                <fieldset>
+                    <legend>Insert New Last Name</legend>
+                    <div className="mb-3">
+                    <label htmlFor="Name" className="form-label">New Last Name *:</label>
+                    <input type="text" id="newName" name="newName" className="form-control" value={editLN} onChange={(event) => setEditLN(event.target.value)} required/>
                     </div>
                     <div className="button-container">
                         <p className="button">
@@ -243,6 +369,8 @@ export default function AccountDisplay() {
                 </form>
             </div>
             )}
+
+
 
 
             {editPassPopup && (

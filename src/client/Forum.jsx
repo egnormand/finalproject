@@ -6,9 +6,9 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Comments from "./Comments";
 import "./Forum.css";
 
-export default function Forum() {
+export default function Forum({ initialForumId }) {
     const [forums, setForums] = useState([]);
-    const [forumId, setForumId] = useState("");
+    const [forumId, setForumId] = useState(initialForumId || "");
     const [posts, setPosts] = useState([]);
     //used to tell the page to load new posts
     const [refresh, setRefresh] = useState(0);
@@ -22,7 +22,9 @@ export default function Forum() {
             .then(response => response.json())
             .then(data => {
                 setForums(data);
-                setForumId(data[0]?.id || "");
+                if (!initialForumId){
+                    setForumId(data[0]?.id || "");
+                }
             });
     }, []);
     //load posts
