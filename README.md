@@ -30,9 +30,9 @@ https://finalproject-ag9e.onrender.com
 
 - Node.js
 - MongoDB 
-- cookie-session for browser sessions
-- bcryptjs for password hashing
-- Nodemailer for SMTP email delivery
+- cookie-session for browser sessions: cookie-session is used for browser sessions because it stores session data in a signed, HTTP-only cookie so the app can keep track of logged-in users securely and efficiently without storing large session data on the server.
+- bcryptjs for password hashing: bcryptjs is used for password hashing because it creates a salted, adaptive hash that is slow to brute-force, making it a secure way to protect user passwords before storing them in the database.
+- Nodemailer for SMTP email delivery: Nodemailer is used for SMTP email delivery because it provides a simple and reliable way for a Node.js application to send emails like account verification links, password resets, and notifications through an SMTP server.
 - Bootstrap and Bootstrap Icons
 - ProseMirror packages for the post editor
 
@@ -43,7 +43,7 @@ https://finalproject-ag9e.onrender.com
 - Emma: 
 - Nicholas: 
 - Isaiah:
-- Luigi
+- Luigi: For the login setup, use cookie-session to manage authenticated browser sessions, bcryptjs to securely hash and verify user passwords, and Nodemailer to send SMTP-based email verification or password reset links for a complete and secure login flow.
 
 ## Project Video:
 https://www.youtube.com/watch?v=RBpiQKZ0QHU
