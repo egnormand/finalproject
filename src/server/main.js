@@ -9,6 +9,7 @@ import {configureAuthentication} from "./auth.js";
 
 dotenv.config();
 const app = express();
+app.set("trust proxy", 1);
 
 
 const sessionSecret = process.env.SESSION_SECRET || randomBytes(32).toString("hex");
