@@ -63,7 +63,7 @@ function SignIn() {
                     <input type="text" id="name" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="email" className="form-label raleway-font">School Email *:</label>
+                    <label htmlFor="email" className="form-label raleway-font">Email *:</label>
                     <input type="email" id="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
                 </div>
                 <div className="mb-3">
