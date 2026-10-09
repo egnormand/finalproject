@@ -1,7 +1,7 @@
 # WPI Forums
 Nicholas Houghton, Emma Normand, Becca Eiferman, Isaiah Balthazar, Luigi Cardaropoli 
 
-WPI Forums is a student focused web application where students can create and join different forums, create posts, and reply to others through comments. The application uses React in the browser, Node.js for server functionality, and MongoDB for persistent storage. Users can sign in with their name, email, and password, and verify their login through an SSO email. 
+WPI Forums is a web application where students can create and join different forums, create posts, and reply to others through comments. The application uses React in the browser, Node.js for server functionality, and MongoDB for persistent storage. Users can sign in with their name, email, and password, and verify their login through an SSO email. 
 
 After signing in you can view forums you can click explore forums to join a forum, post to create a new post, and comment to comment on someone elses post. After creating a post you can also delete it, or pin a post.  You can view your account info in the top right, as well as sign out. 
 
