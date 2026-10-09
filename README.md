@@ -5,7 +5,7 @@ WPI Forums is a web application where students can create and join different for
 
 After signing in you can view forums you can click explore forums to join a forum, post to create a new post, and comment to comment on someone elses post. After creating a post you can also delete it, or pin a post.  You can view your account info in the top right, as well as sign out. 
 
-For sign in please check your spam folder if you do not see the email. Use a non WPI/outlook email as safelinks may invalidate the cookie not allowing you to sign in. 
+For sign in use a non WPI/outlook email as safelinks may invalidate the cookie not allowing you to sign in. Please check your spam folder if you do not see the email. 
 
 https://finalproject-ag9e.onrender.com
 ## Instructions to use
